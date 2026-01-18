@@ -54,6 +54,18 @@ Use conventional commits:
 - `docs:` documentation changes
 - `chore:` maintenance tasks
 
+## Architecture Decision Records (ADRs)
+
+Capture key decisions and learnings in `docs/adr/` when:
+- Making significant architectural choices (e.g., choosing a framework, library, or pattern)
+- Encountering and solving non-obvious problems
+- Discovering limitations or pitfalls in APIs/tools
+- Choosing between multiple valid approaches
+
+Don't create ADRs for routine work. Focus on decisions that future developers (or AI assistants) would benefit from understanding.
+
+Format: See existing ADRs for the template (Status, Context, Decision, Consequences).
+
 ## Testing
 
 Run tests with `swift test`. The core library is designed for testability - all business logic should have corresponding tests.
