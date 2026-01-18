@@ -33,8 +33,8 @@ struct MenuBarContent: View {
 
         Divider()
 
-        Button("Preferences...") {
-            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+        SettingsLink {
+            Text("Preferences...")
         }
         .keyboardShortcut(",")
 
