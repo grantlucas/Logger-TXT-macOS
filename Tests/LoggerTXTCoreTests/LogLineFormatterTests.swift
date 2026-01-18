@@ -25,7 +25,7 @@ struct LogLineFormatterTests {
         )
 
         let formatted = LogLineFormatter.format(entry)
-        #expect(formatted == "1→10/02/26 08:15 -0800 - Starting the day with coffee")
+        #expect(formatted == "10/02/26 08:15 -0800 - Starting the day with coffee")
     }
 
     @Test("Format entry with type only")
@@ -39,7 +39,7 @@ struct LogLineFormatterTests {
         )
 
         let formatted = LogLineFormatter.format(entry)
-        #expect(formatted == "8→10/02/26 08:15 -0800 - FREELANCE - Invoiced the Henderson project")
+        #expect(formatted == "10/02/26 08:15 -0800 - FREELANCE - Invoiced the Henderson project")
     }
 
     @Test("Format entry with type and project")
@@ -54,13 +54,7 @@ struct LogLineFormatterTests {
         )
 
         let formatted = LogLineFormatter.format(entry)
-        #expect(formatted == "2→10/02/26 08:15 -0800 - FREELANCE (OAKMONT) - Got feedback from the Oakmont client")
-    }
-
-    @Test("Format placeholder line")
-    func formatPlaceholder() {
-        let placeholder = LogLineFormatter.formatPlaceholder(lineNumber: 81)
-        #expect(placeholder == "81→")
+        #expect(formatted == "10/02/26 08:15 -0800 - FREELANCE (OAKMONT) - Got feedback from the Oakmont client")
     }
 
     @Test("Format entry with positive timezone")

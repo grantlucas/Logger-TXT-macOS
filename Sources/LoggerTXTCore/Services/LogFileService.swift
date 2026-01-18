@@ -33,20 +33,19 @@ public actor LogFileService {
     /// Gets the next available line number.
     public func getNextLineNumber() throws -> Int {
         let lines = try readLines()
-        let results = lines.map { LogLineParser.parse($0) }
-        return LogLineParser.getNextLineNumber(from: results)
+        // Count non-empty lines + 1
+        let entryCount = lines.filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.count
+        return entryCount + 1
     }
 
     /// Appends a new entry to the log file.
     /// - Parameter entry: The entry to append
-    /// - Note: This replaces the placeholder line and adds a new placeholder
     public func appendEntry(_ entry: LogEntry) throws {
         let lines = try readLines()
         var newLines = lines
 
-        // Remove empty lines at the end and any placeholder line
-        while let last = newLines.last, last.trimmingCharacters(in: .whitespaces).isEmpty ||
-              isPlaceholderLine(last) {
+        // Remove empty lines at the end
+        while let last = newLines.last, last.trimmingCharacters(in: .whitespaces).isEmpty {
             newLines.removeLast()
         }
 
@@ -54,17 +53,12 @@ public actor LogFileService {
         let formattedEntry = LogLineFormatter.format(entry)
         newLines.append(formattedEntry)
 
-        // Add new placeholder line
-        let nextLineNumber = entry.lineNumber + 1
-        let placeholder = LogLineFormatter.formatPlaceholder(lineNumber: nextLineNumber)
-        newLines.append(placeholder)
-
         // Write back to file
         let content = newLines.joined(separator: "\n")
         try content.write(to: fileURL, atomically: true, encoding: .utf8)
     }
 
-    /// Creates a new log file with an initial placeholder if it doesn't exist.
+    /// Creates the log file if it doesn't exist.
     public func createIfNeeded() throws {
         guard !fileManager.fileExists(atPath: fileURL.path) else {
             return
@@ -76,9 +70,8 @@ public actor LogFileService {
             try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
         }
 
-        // Create file with initial placeholder
-        let placeholder = LogLineFormatter.formatPlaceholder(lineNumber: 1)
-        try placeholder.write(to: fileURL, atomically: true, encoding: .utf8)
+        // Create empty file
+        try "".write(to: fileURL, atomically: true, encoding: .utf8)
     }
 
     /// Extracts all unique types from the log file.
@@ -91,14 +84,6 @@ public actor LogFileService {
     public func extractProjects() throws -> Set<String> {
         let entries = try readEntries()
         return LogLineParser.extractProjects(from: entries)
-    }
-
-    /// Checks if a line is a placeholder line (just line number, no content).
-    private func isPlaceholderLine(_ line: String) -> Bool {
-        if case .placeholder = LogLineParser.parse(line) {
-            return true
-        }
-        return false
     }
 }
 

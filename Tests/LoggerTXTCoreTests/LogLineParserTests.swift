@@ -6,101 +6,66 @@ import Foundation
 struct LogLineParserTests {
     @Test("Parse message only entry")
     func parseMessageOnly() {
-        let line = "1→10/02/26 08:15 -0800 - Starting the day with coffee"
-        let result = LogLineParser.parse(line)
+        let line = "10/02/26 08:15 -0800 - Starting the day with coffee"
+        let entry = LogLineParser.parse(line, lineNumber: 1)
 
-        guard case .entry(let entry) = result else {
-            Issue.record("Expected entry result")
-            return
-        }
-
-        #expect(entry.lineNumber == 1)
-        #expect(entry.timezoneOffset == "-0800")
-        #expect(entry.type == nil)
-        #expect(entry.project == nil)
-        #expect(entry.message == "Starting the day with coffee")
+        #expect(entry != nil)
+        #expect(entry?.lineNumber == 1)
+        #expect(entry?.timezoneOffset == "-0800")
+        #expect(entry?.type == nil)
+        #expect(entry?.project == nil)
+        #expect(entry?.message == "Starting the day with coffee")
     }
 
     @Test("Parse entry with type only")
     func parseWithTypeOnly() {
-        let line = "8→10/02/26 11:15 -0800 - FREELANCE - Invoiced the Henderson project"
-        let result = LogLineParser.parse(line)
+        let line = "10/02/26 11:15 -0800 - FREELANCE - Invoiced the Henderson project"
+        let entry = LogLineParser.parse(line, lineNumber: 8)
 
-        guard case .entry(let entry) = result else {
-            Issue.record("Expected entry result")
-            return
-        }
-
-        #expect(entry.lineNumber == 8)
-        #expect(entry.type == "FREELANCE")
-        #expect(entry.project == nil)
-        #expect(entry.message == "Invoiced the Henderson project")
+        #expect(entry != nil)
+        #expect(entry?.lineNumber == 8)
+        #expect(entry?.type == "FREELANCE")
+        #expect(entry?.project == nil)
+        #expect(entry?.message == "Invoiced the Henderson project")
     }
 
     @Test("Parse entry with type and project")
     func parseWithTypeAndProject() {
-        let line = "2→10/02/26 08:32 -0800 - FREELANCE (OAKMONT) - Got feedback from the Oakmont client"
-        let result = LogLineParser.parse(line)
+        let line = "10/02/26 08:32 -0800 - FREELANCE (OAKMONT) - Got feedback from the Oakmont client"
+        let entry = LogLineParser.parse(line, lineNumber: 2)
 
-        guard case .entry(let entry) = result else {
-            Issue.record("Expected entry result")
-            return
-        }
-
-        #expect(entry.lineNumber == 2)
-        #expect(entry.type == "FREELANCE")
-        #expect(entry.project == "OAKMONT")
-        #expect(entry.message == "Got feedback from the Oakmont client")
+        #expect(entry != nil)
+        #expect(entry?.lineNumber == 2)
+        #expect(entry?.type == "FREELANCE")
+        #expect(entry?.project == "OAKMONT")
+        #expect(entry?.message == "Got feedback from the Oakmont client")
     }
 
-    @Test("Parse placeholder line")
-    func parsePlaceholder() {
-        let line = "81→"
-        let result = LogLineParser.parse(line)
-
-        guard case .placeholder(let lineNumber) = result else {
-            Issue.record("Expected placeholder result")
-            return
-        }
-
-        #expect(lineNumber == 81)
+    @Test("Parse empty line returns nil")
+    func parseEmptyLine() {
+        let entry = LogLineParser.parse("", lineNumber: 1)
+        #expect(entry == nil)
     }
 
-    @Test("Parse placeholder with whitespace")
-    func parsePlaceholderWithWhitespace() {
-        let line = "  42→  "
-        let result = LogLineParser.parse(line)
-
-        guard case .placeholder(let lineNumber) = result else {
-            Issue.record("Expected placeholder result")
-            return
-        }
-
-        #expect(lineNumber == 42)
+    @Test("Parse whitespace only line returns nil")
+    func parseWhitespaceOnlyLine() {
+        let entry = LogLineParser.parse("   ", lineNumber: 1)
+        #expect(entry == nil)
     }
 
-    @Test("Parse invalid line returns invalid result")
+    @Test("Parse invalid line returns nil")
     func parseInvalidLine() {
-        let line = "This is not a valid log line"
-        let result = LogLineParser.parse(line)
-
-        guard case .invalid = result else {
-            Issue.record("Expected invalid result")
-            return
-        }
+        let entry = LogLineParser.parse("This is not a valid log line", lineNumber: 1)
+        #expect(entry == nil)
     }
 
     @Test("Parse entry with underscore in type")
     func parseTypeWithUnderscore() {
-        let line = "10→10/02/26 08:15 -0800 - GAME_DEV - Working on game"
-        let result = LogLineParser.parse(line)
+        let line = "10/02/26 08:15 -0800 - GAME_DEV - Working on game"
+        let entry = LogLineParser.parse(line, lineNumber: 10)
 
-        guard case .entry(let entry) = result else {
-            Issue.record("Expected entry result")
-            return
-        }
-
-        #expect(entry.type == "GAME_DEV")
+        #expect(entry != nil)
+        #expect(entry?.type == "GAME_DEV")
     }
 
     @Test("Extract types from entries")
@@ -129,27 +94,18 @@ struct LogLineParserTests {
         #expect(projects == Set(["ALPHA", "BETA"]))
     }
 
-    @Test("Get next line number from entries")
-    func getNextLineNumberFromEntries() {
-        let results: [LogLineParser.ParseResult] = [
-            .entry(LogEntry(lineNumber: 1, timestamp: Date(), timezoneOffset: "-0800", message: "msg")),
-            .entry(LogEntry(lineNumber: 2, timestamp: Date(), timezoneOffset: "-0800", message: "msg")),
-            .entry(LogEntry(lineNumber: 3, timestamp: Date(), timezoneOffset: "-0800", message: "msg"))
+    @Test("Parse multiple lines assigns correct line numbers")
+    func parseLinesAssignsLineNumbers() {
+        let lines = [
+            "10/02/26 08:15 -0800 - First message",
+            "10/02/26 09:00 -0800 - Second message",
+            "10/02/26 10:00 -0800 - Third message"
         ]
 
-        let nextLine = LogLineParser.getNextLineNumber(from: results)
-        #expect(nextLine == 4)
-    }
-
-    @Test("Get next line number from placeholder")
-    func getNextLineNumberFromPlaceholder() {
-        let results: [LogLineParser.ParseResult] = [
-            .entry(LogEntry(lineNumber: 1, timestamp: Date(), timezoneOffset: "-0800", message: "msg")),
-            .entry(LogEntry(lineNumber: 2, timestamp: Date(), timezoneOffset: "-0800", message: "msg")),
-            .placeholder(lineNumber: 3)
-        ]
-
-        let nextLine = LogLineParser.getNextLineNumber(from: results)
-        #expect(nextLine == 3)
+        let entries = LogLineParser.parseLines(lines)
+        #expect(entries.count == 3)
+        #expect(entries[0].lineNumber == 1)
+        #expect(entries[1].lineNumber == 2)
+        #expect(entries[2].lineNumber == 3)
     }
 }

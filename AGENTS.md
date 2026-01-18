@@ -18,16 +18,14 @@ It rewrites the legacy Objective-C app in modern Swift 6.
 The log format must be preserved exactly for bash script compatibility:
 
 ```text
-{lineNum}→{DD/MM/YY HH:MM} {±HHMM} - [{TYPE} [({PROJECT})] - ]{message}
+{DD/MM/YY HH:MM} {±HHMM} - [{TYPE} [({PROJECT})] - ]{message}
 ```
 
 Examples:
 
-- `1→10/02/26 08:15 -0800 - Just a message`
-- `2→10/02/26 08:32 -0800 - WORK - Message with type`
-- `3→10/02/26 09:00 -0800 - WORK (PROJECT) - Message with type and project`
-
-The arrow is Unicode `→` (U+2192), not `->`.
+- `10/02/26 08:15 -0800 - Just a message`
+- `10/02/26 08:32 -0800 - WORK - Message with type`
+- `10/02/26 09:00 -0800 - WORK (PROJECT) - Message with type and project`
 
 ## Build Commands
 

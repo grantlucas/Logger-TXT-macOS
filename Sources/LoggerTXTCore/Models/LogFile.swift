@@ -36,17 +36,10 @@ public struct LogFile: Equatable, Sendable {
         let content = try String(contentsOf: url, encoding: .utf8)
         let lines = content.components(separatedBy: .newlines)
 
-        let results = lines.map { LogLineParser.parse($0) }
-        let entries = results.compactMap { result -> LogEntry? in
-            if case .entry(let entry) = result {
-                return entry
-            }
-            return nil
-        }
-
+        let entries = LogLineParser.parseLines(lines)
         let types = LogLineParser.extractTypes(from: entries)
         let projects = LogLineParser.extractProjects(from: entries)
-        let nextLineNumber = LogLineParser.getNextLineNumber(from: results)
+        let nextLineNumber = entries.count + 1
 
         return LogFile(
             url: url,
