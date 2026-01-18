@@ -75,7 +75,6 @@ Example test:
 @Test("Format entry with type and project")
 func formatWithTypeAndProject() {
     let entry = LogEntry(
-        lineNumber: 2,
         timestamp: testDate,
         timezoneOffset: "-0800",
         type: "FREELANCE",
@@ -83,14 +82,14 @@ func formatWithTypeAndProject() {
         message: "Got feedback"
     )
     let formatted = LogLineFormatter.format(entry)
-    let expected = "2→10/02/26 08:15 -0800 - FREELANCE (OAKMONT) - Got feedback"
+    let expected = "10/02/26 08:15 -0800 - FREELANCE (OAKMONT) - Got feedback"
     #expect(formatted == expected)
 }
 ```
 
 ### Why This Worked Well
 
-The TDD approach caught a critical issue early: ensuring the Unicode arrow
-character (→) was used correctly in the format. If we'd written the UI
-first and tested manually, this subtle character difference might have
-caused bash script compatibility issues.
+The TDD approach caught issues early: ensuring the date format (DD/MM/YY)
+and timezone spacing were correct. If we'd written the UI first and tested
+manually, these subtle format differences might have caused bash script
+compatibility issues.

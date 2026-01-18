@@ -37,7 +37,7 @@ public actor LogFileService {
 Callers use async/await:
 
 ```swift
-let lineNumber = try await logFileService.getNextLineNumber()
+try await logFileService.createIfNeeded()
 try await logFileService.appendEntry(entry)
 ```
 
@@ -63,8 +63,7 @@ In AppState (which is `@MainActor`), we call the actor:
 ```swift
 func saveEntry() async throws {
     try await logFileService.createIfNeeded()
-    let lineNumber = try await logFileService.getNextLineNumber()
-    let entry = LogEntry.create(lineNumber: lineNumber, ...)
+    let entry = LogEntry.create(type: type, project: project, message: message)
     try await logFileService.appendEntry(entry)
 }
 ```
@@ -92,11 +91,10 @@ The actor approach is more correct, even if slightly more complex.
 
 ### Thread Safety Guarantee
 
-With an actor, this sequence is safe:
+With an actor, file operations are serialized:
 
-1. Read file to get next line number
-2. Create entry with that line number
-3. Append entry to file
+1. Create file if needed
+2. Append entry to file
 
-Without an actor, a race condition could cause two entries with the same
-line number.
+Without an actor, concurrent writes could corrupt the log file or cause
+entries to be lost.

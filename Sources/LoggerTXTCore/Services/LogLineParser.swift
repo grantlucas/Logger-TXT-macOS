@@ -12,11 +12,9 @@ public enum LogLineParser {
     private static let typeProjectPattern = #"^([A-Z0-9_]+)(?: \(([^)]+)\))? - (.+)$"#
 
     /// Parses a single log line into a LogEntry.
-    /// - Parameters:
-    ///   - line: The log line to parse
-    ///   - lineNumber: The line number in the file (1-indexed)
+    /// - Parameter line: The log line to parse
     /// - Returns: A LogEntry if parsing succeeds, nil otherwise
-    public static func parse(_ line: String, lineNumber: Int) -> LogEntry? {
+    public static func parse(_ line: String) -> LogEntry? {
         let trimmedLine = line.trimmingCharacters(in: .whitespaces)
 
         // Skip empty lines
@@ -45,7 +43,6 @@ public enum LogLineParser {
         let (type, project, message) = parseContent(String(content))
 
         return LogEntry(
-            lineNumber: lineNumber,
             timestamp: timestamp,
             timezoneOffset: String(timezoneStr),
             type: type,
@@ -73,9 +70,7 @@ public enum LogLineParser {
 
     /// Parses multiple lines and returns all successfully parsed entries.
     public static func parseLines(_ lines: [String]) -> [LogEntry] {
-        lines.enumerated().compactMap { index, line in
-            parse(line, lineNumber: index + 1)
-        }
+        lines.compactMap { parse($0) }
     }
 
     /// Extracts all unique types from parsed entries.

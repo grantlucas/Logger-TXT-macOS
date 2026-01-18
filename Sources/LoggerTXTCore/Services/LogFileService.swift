@@ -30,14 +30,6 @@ public actor LogFileService {
         return LogLineParser.parseLines(lines)
     }
 
-    /// Gets the next available line number.
-    public func getNextLineNumber() throws -> Int {
-        let lines = try readLines()
-        // Count non-empty lines + 1
-        let entryCount = lines.filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.count
-        return entryCount + 1
-    }
-
     /// Appends a new entry to the log file.
     /// - Parameter entry: The entry to append
     public func appendEntry(_ entry: LogEntry) throws {

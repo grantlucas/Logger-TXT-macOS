@@ -18,7 +18,6 @@ struct LogLineFormatterTests {
     @Test("Format entry with message only")
     func formatMessageOnly() {
         let entry = LogEntry(
-            lineNumber: 1,
             timestamp: testDate,
             timezoneOffset: "-0800",
             message: "Starting the day with coffee"
@@ -31,7 +30,6 @@ struct LogLineFormatterTests {
     @Test("Format entry with type only")
     func formatWithTypeOnly() {
         let entry = LogEntry(
-            lineNumber: 8,
             timestamp: testDate,
             timezoneOffset: "-0800",
             type: "FREELANCE",
@@ -45,7 +43,6 @@ struct LogLineFormatterTests {
     @Test("Format entry with type and project")
     func formatWithTypeAndProject() {
         let entry = LogEntry(
-            lineNumber: 2,
             timestamp: testDate,
             timezoneOffset: "-0800",
             type: "FREELANCE",
@@ -60,7 +57,6 @@ struct LogLineFormatterTests {
     @Test("Format entry with positive timezone")
     func formatWithPositiveTimezone() {
         let entry = LogEntry(
-            lineNumber: 1,
             timestamp: testDate,
             timezoneOffset: "+0530",
             message: "Test message"

@@ -2,9 +2,6 @@ import Foundation
 
 /// Represents a single log entry with all its components.
 public struct LogEntry: Equatable, Sendable {
-    /// The line number in the log file (1-indexed)
-    public let lineNumber: Int
-
     /// The timestamp when the entry was created
     public let timestamp: Date
 
@@ -21,14 +18,12 @@ public struct LogEntry: Equatable, Sendable {
     public let message: String
 
     public init(
-        lineNumber: Int,
         timestamp: Date,
         timezoneOffset: String,
         type: String? = nil,
         project: String? = nil,
         message: String
     ) {
-        self.lineNumber = lineNumber
         self.timestamp = timestamp
         self.timezoneOffset = timezoneOffset
         self.type = type
@@ -38,7 +33,6 @@ public struct LogEntry: Equatable, Sendable {
 
     /// Creates a new LogEntry with the current date/time and system timezone
     public static func create(
-        lineNumber: Int,
         type: String? = nil,
         project: String? = nil,
         message: String
@@ -46,7 +40,6 @@ public struct LogEntry: Equatable, Sendable {
         let now = Date()
         let offset = TimeZone.current.formattedOffset()
         return LogEntry(
-            lineNumber: lineNumber,
             timestamp: now,
             timezoneOffset: offset,
             type: type,

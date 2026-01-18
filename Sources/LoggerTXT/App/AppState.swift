@@ -91,12 +91,8 @@ final class AppState {
         // Create log file if needed
         try await logFileService.createIfNeeded()
 
-        // Get next line number
-        let lineNumber = try await logFileService.getNextLineNumber()
-
         // Create entry
         let entry = LogEntry.create(
-            lineNumber: lineNumber,
             type: type.isEmpty ? nil : type.uppercased(),
             project: project.isEmpty ? nil : project.uppercased(),
             message: message.trimmingCharacters(in: .whitespaces)

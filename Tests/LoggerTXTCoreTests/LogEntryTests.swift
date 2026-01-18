@@ -8,7 +8,6 @@ struct LogEntryTests {
     func createEntryWithAllFields() {
         let date = Date()
         let entry = LogEntry(
-            lineNumber: 1,
             timestamp: date,
             timezoneOffset: "-0800",
             type: "WORK",
@@ -16,7 +15,6 @@ struct LogEntryTests {
             message: "Test message"
         )
 
-        #expect(entry.lineNumber == 1)
         #expect(entry.timestamp == date)
         #expect(entry.timezoneOffset == "-0800")
         #expect(entry.type == "WORK")
@@ -27,7 +25,6 @@ struct LogEntryTests {
     @Test("Create entry without type and project")
     func createEntryWithoutTypeAndProject() {
         let entry = LogEntry(
-            lineNumber: 1,
             timestamp: Date(),
             timezoneOffset: "-0800",
             message: "Simple message"
@@ -41,13 +38,11 @@ struct LogEntryTests {
     func staticCreateUsesCurrentDate() {
         let before = Date()
         let entry = LogEntry.create(
-            lineNumber: 5,
             type: "TEST",
             message: "Created entry"
         )
         let after = Date()
 
-        #expect(entry.lineNumber == 5)
         #expect(entry.timestamp >= before)
         #expect(entry.timestamp <= after)
         #expect(entry.type == "TEST")
