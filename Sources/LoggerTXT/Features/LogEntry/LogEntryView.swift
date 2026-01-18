@@ -35,6 +35,7 @@ struct LogEntryView: View {
                     text: $appState.type,
                     suggestions: appState.typeSuggestions(for: appState.type),
                     isFocused: focusedField == .type,
+                    isDisabled: appState.message.isEmpty,
                     onFocus: { focusedField = .type },
                     onTab: { focusedField = .project }
                 )
@@ -45,6 +46,7 @@ struct LogEntryView: View {
                     text: $appState.project,
                     suggestions: appState.projectSuggestions(for: appState.project),
                     isFocused: focusedField == .project,
+                    isDisabled: appState.message.isEmpty,
                     onFocus: { focusedField = .project },
                     onTab: { focusedField = .message }
                 )
@@ -63,6 +65,7 @@ struct LogEntryView: View {
                 }
                 .keyboardShortcut(.return, modifiers: .command)
                 .buttonStyle(.borderedProminent)
+                .disabled(appState.message.isEmpty)
             }
         }
         .padding(16)
@@ -110,6 +113,7 @@ struct AutocompleteTextField: View {
     @Binding var text: String
     let suggestions: [String]
     let isFocused: Bool
+    let isDisabled: Bool
     let onFocus: () -> Void
     let onTab: () -> Void
 
@@ -127,10 +131,12 @@ struct AutocompleteTextField: View {
             Text(title)
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                .opacity(isDisabled ? 0.5 : 1.0)
 
             TextField("", text: $text)
                 .textFieldStyle(.roundedBorder)
                 .textCase(.uppercase)
+                .disabled(isDisabled)
                 .background(
                     ViewAnchor { view in
                         anchorView = view
