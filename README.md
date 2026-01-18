@@ -98,10 +98,29 @@ This can be changed in Preferences (click the menu bar icon → Preferences).
 ### Building
 
 ```bash
+make build    # Debug build
+make release  # Release build
+make test     # Run tests
+make bundle   # Create .app bundle
+make install  # Bundle and install to /Applications
+```
+
+Or using Swift directly:
+
+```bash
 swift build              # Debug build
 swift build -c release   # Release build
 swift test               # Run tests
-./Scripts/bundle.sh      # Create .app bundle
+```
+
+### Running
+
+```bash
+make run      # Build and run the app
+make stop     # Stop the running app
+make restart  # Stop and restart the app
+make clean    # Remove build artifacts
+make help     # Show all available commands
 ```
 
 ### Project Structure

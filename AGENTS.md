@@ -2,7 +2,8 @@
 
 ## Project Overview
 
-Logger-TXT is a macOS menu bar application for quick timestamped logging. It rewrites the legacy Objective-C app in modern Swift 6.
+Logger-TXT is a macOS menu bar application for quick timestamped logging.
+It rewrites the legacy Objective-C app in modern Swift 6.
 
 ## Key Files
 
@@ -16,11 +17,12 @@ Logger-TXT is a macOS menu bar application for quick timestamped logging. It rew
 
 The log format must be preserved exactly for bash script compatibility:
 
-```
+```text
 {lineNum}→{DD/MM/YY HH:MM} {±HHMM} - [{TYPE} [({PROJECT})] - ]{message}
 ```
 
 Examples:
+
 - `1→10/02/26 08:15 -0800 - Just a message`
 - `2→10/02/26 08:32 -0800 - WORK - Message with type`
 - `3→10/02/26 09:00 -0800 - WORK (PROJECT) - Message with type and project`
@@ -28,6 +30,21 @@ Examples:
 The arrow is Unicode `→` (U+2192), not `->`.
 
 ## Build Commands
+
+```bash
+make build    # Build debug version
+make release  # Build release version
+make test     # Run tests
+make run      # Build and run the app
+make stop     # Stop the running app
+make restart  # Stop and restart the app
+make bundle   # Create .app bundle
+make install  # Bundle and install to /Applications
+make clean    # Remove build artifacts
+make help     # Show all commands
+```
+
+Or using Swift directly:
 
 ```bash
 swift build              # Build the project
@@ -47,6 +64,7 @@ swift build && .build/debug/LoggerTXT  # Build and run
 ## Commit Conventions
 
 Use conventional commits:
+
 - `feat:` new features
 - `fix:` bug fixes
 - `refactor:` code changes that neither fix bugs nor add features
@@ -57,18 +75,22 @@ Use conventional commits:
 ## Architecture Decision Records (ADRs)
 
 Capture key decisions and learnings in `docs/adr/` when:
-- Making significant architectural choices (e.g., choosing a framework, library, or pattern)
+
+- Making significant architectural choices (e.g., choosing a framework,
+  library, or pattern)
 - Encountering and solving non-obvious problems
 - Discovering limitations or pitfalls in APIs/tools
 - Choosing between multiple valid approaches
 
-Don't create ADRs for routine work. Focus on decisions that future developers (or AI assistants) would benefit from understanding.
+Don't create ADRs for routine work. Focus on decisions that future developers
+(or AI assistants) would benefit from understanding.
 
 Format: See existing ADRs for the template (Status, Context, Decision, Consequences).
 
 ## Testing
 
-Run tests with `swift test`. The core library is designed for testability - all business logic should have corresponding tests.
+Run tests with `swift test`. The core library is designed for testability -
+all business logic should have corresponding tests.
 
 ## UI Behavior
 
@@ -82,7 +104,7 @@ Run tests with `swift test`. The core library is designed for testability - all 
 
 ## Project Structure
 
-```
+```text
 Sources/
 ├── LoggerTXT/              # Main app (executable target)
 │   ├── App/
