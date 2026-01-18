@@ -76,3 +76,9 @@ let contentView = LogEntryView(appState: appState, onDismiss: { ... })
 let hostingView = NSHostingView(rootView: contentView)
 self.contentView = hostingView
 ```
+
+## See Also
+
+- [ADR 009: NSPopover for Autocomplete](009-nspopover-for-autocomplete.md) -
+  SwiftUI overlays inside NSPanel are still clipped to window bounds; use
+  NSPopover for content that must extend beyond the window

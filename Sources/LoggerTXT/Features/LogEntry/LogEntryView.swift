@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 /// The main view for entering log entries.
 struct LogEntryView: View {
@@ -79,6 +80,9 @@ struct LogEntryView: View {
         .onChange(of: appState.isEntryPanelShowing) { _, isShowing in
             if isShowing {
                 focusedField = .message
+            } else {
+                // Hide autocomplete when panel is hidden
+                AutocompletePopoverWindow.shared.hide()
             }
         }
         .onKeyPress(.escape) {
@@ -100,7 +104,7 @@ struct LogEntryView: View {
     }
 }
 
-/// A text field with autocomplete dropdown.
+/// A text field with autocomplete dropdown using a popover.
 struct AutocompleteTextField: View {
     let title: String
     @Binding var text: String
@@ -111,6 +115,7 @@ struct AutocompleteTextField: View {
 
     @State private var selectedIndex: Int = 0
     @State private var showSuggestions: Bool = false
+    @State private var anchorView: NSView?
 
     private var filteredSuggestions: [String] {
         guard !text.isEmpty else { return [] }
@@ -123,74 +128,98 @@ struct AutocompleteTextField: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
-            ZStack(alignment: .topLeading) {
-                TextField("", text: $text)
-                    .textFieldStyle(.roundedBorder)
-                    .textCase(.uppercase)
-                    .onChange(of: text) { _, newValue in
-                        text = newValue.uppercased()
-                        selectedIndex = 0
-                        showSuggestions = !filteredSuggestions.isEmpty && isFocused
+            TextField("", text: $text)
+                .textFieldStyle(.roundedBorder)
+                .textCase(.uppercase)
+                .background(
+                    ViewAnchor { view in
+                        anchorView = view
                     }
-                    .onChange(of: isFocused) { _, focused in
-                        showSuggestions = focused && !filteredSuggestions.isEmpty
-                    }
-                    .onKeyPress(.downArrow) {
-                        if !filteredSuggestions.isEmpty {
-                            selectedIndex = min(selectedIndex + 1, filteredSuggestions.count - 1)
-                            showSuggestions = true
-                        }
-                        return .handled
-                    }
-                    .onKeyPress(.upArrow) {
-                        if !filteredSuggestions.isEmpty {
-                            selectedIndex = max(selectedIndex - 1, 0)
-                            showSuggestions = true
-                        }
-                        return .handled
-                    }
-                    .onKeyPress(.tab) {
-                        if showSuggestions && !filteredSuggestions.isEmpty {
-                            text = filteredSuggestions[selectedIndex]
-                            showSuggestions = false
-                        }
-                        onTab()
-                        return .handled
-                    }
-                    .onKeyPress(.return) {
-                        if showSuggestions && !filteredSuggestions.isEmpty {
-                            text = filteredSuggestions[selectedIndex]
-                            showSuggestions = false
-                            return .handled
-                        }
-                        return .ignored
-                    }
-
-                // Suggestions dropdown
-                if showSuggestions && !filteredSuggestions.isEmpty {
-                    VStack(alignment: .leading, spacing: 0) {
-                        ForEach(Array(filteredSuggestions.enumerated()), id: \.offset) { index, suggestion in
-                            Text(suggestion)
-                                .font(.system(size: 13))
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(index == selectedIndex ? Color.accentColor.opacity(0.2) : Color.clear)
-                                .onTapGesture {
-                                    text = suggestion
-                                    showSuggestions = false
-                                }
-                        }
-                    }
-                    .background(
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(.regularMaterial)
-                            .shadow(radius: 4)
-                    )
-                    .offset(y: 30)
-                    .zIndex(100)
+                )
+                .onChange(of: text) { _, newValue in
+                    text = newValue.uppercased()
+                    selectedIndex = 0
+                    showSuggestions = !filteredSuggestions.isEmpty && isFocused
+                    updatePopover()
                 }
+                .onChange(of: isFocused) { _, focused in
+                    showSuggestions = focused && !filteredSuggestions.isEmpty
+                    updatePopover()
+                }
+                .onChange(of: showSuggestions) { _, _ in
+                    updatePopover()
+                }
+                .onChange(of: selectedIndex) { _, _ in
+                    if showSuggestions {
+                        AutocompletePopoverWindow.shared.updateSelection(selectedIndex)
+                    }
+                }
+                .onKeyPress(.downArrow) {
+                    if !filteredSuggestions.isEmpty {
+                        selectedIndex = min(selectedIndex + 1, filteredSuggestions.count - 1)
+                        showSuggestions = true
+                    }
+                    return .handled
+                }
+                .onKeyPress(.upArrow) {
+                    if !filteredSuggestions.isEmpty {
+                        selectedIndex = max(selectedIndex - 1, 0)
+                        showSuggestions = true
+                    }
+                    return .handled
+                }
+                .onKeyPress(.tab) {
+                    if showSuggestions && !filteredSuggestions.isEmpty {
+                        text = filteredSuggestions[selectedIndex]
+                        showSuggestions = false
+                    }
+                    onTab()
+                    return .handled
+                }
+                .onKeyPress(.return) {
+                    if showSuggestions && !filteredSuggestions.isEmpty {
+                        text = filteredSuggestions[selectedIndex]
+                        showSuggestions = false
+                        return .handled
+                    }
+                    return .ignored
+                }
+        }
+    }
+
+    private func updatePopover() {
+        guard showSuggestions, !filteredSuggestions.isEmpty, let view = anchorView else {
+            AutocompletePopoverWindow.shared.hide()
+            return
+        }
+
+        AutocompletePopoverWindow.shared.show(
+            suggestions: filteredSuggestions,
+            selectedIndex: selectedIndex,
+            relativeTo: view,
+            onSelect: { suggestion in
+                text = suggestion
+                showSuggestions = false
             }
+        )
+    }
+}
+
+/// Helper view to capture the NSView reference for popover anchoring.
+struct ViewAnchor: NSViewRepresentable {
+    let onViewReady: (NSView) -> Void
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView()
+        DispatchQueue.main.async {
+            onViewReady(view)
+        }
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        DispatchQueue.main.async {
+            onViewReady(nsView)
         }
     }
 }
