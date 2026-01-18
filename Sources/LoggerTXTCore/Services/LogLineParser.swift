@@ -87,4 +87,42 @@ public enum LogLineParser {
     public static func extractProjects(from entries: [LogEntry]) -> Set<String> {
         Set(entries.compactMap(\.project))
     }
+
+    // MARK: - Recency Extraction
+
+    /// Extracts all types with their most recent usage date.
+    /// - Parameter entries: The log entries to extract from
+    /// - Returns: Dictionary mapping type names to their most recent timestamp
+    public static func extractTypesWithRecency(from entries: [LogEntry]) -> [String: Date] {
+        var result: [String: Date] = [:]
+        for entry in entries {
+            guard let type = entry.type else { continue }
+            if let existingDate = result[type] {
+                if entry.timestamp > existingDate {
+                    result[type] = entry.timestamp
+                }
+            } else {
+                result[type] = entry.timestamp
+            }
+        }
+        return result
+    }
+
+    /// Extracts all projects with their most recent usage date.
+    /// - Parameter entries: The log entries to extract from
+    /// - Returns: Dictionary mapping project names to their most recent timestamp
+    public static func extractProjectsWithRecency(from entries: [LogEntry]) -> [String: Date] {
+        var result: [String: Date] = [:]
+        for entry in entries {
+            guard let project = entry.project else { continue }
+            if let existingDate = result[project] {
+                if entry.timestamp > existingDate {
+                    result[project] = entry.timestamp
+                }
+            } else {
+                result[project] = entry.timestamp
+            }
+        }
+        return result
+    }
 }

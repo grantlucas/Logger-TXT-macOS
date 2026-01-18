@@ -85,6 +85,18 @@ public actor LogFileService {
         let entries = try readEntries()
         return LogLineParser.extractProjects(from: entries)
     }
+
+    /// Extracts all types with their most recent usage date from the log file.
+    public func extractTypesWithRecency() throws -> [String: Date] {
+        let entries = try readEntries()
+        return LogLineParser.extractTypesWithRecency(from: entries)
+    }
+
+    /// Extracts all projects with their most recent usage date from the log file.
+    public func extractProjectsWithRecency() throws -> [String: Date] {
+        let entries = try readEntries()
+        return LogLineParser.extractProjectsWithRecency(from: entries)
+    }
 }
 
 /// Convenience extension for creating a LogFileService with a default log file location.

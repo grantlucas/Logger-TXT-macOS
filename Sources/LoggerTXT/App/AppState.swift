@@ -21,11 +21,11 @@ final class AppState {
 
     // MARK: - Autocomplete State
 
-    /// Available types for autocomplete
-    var availableTypes: Set<String> = []
+    /// Available types for autocomplete (name -> last used date)
+    var availableTypes: [String: Date] = [:]
 
-    /// Available projects for autocomplete
-    var availableProjects: Set<String> = []
+    /// Available projects for autocomplete (name -> last used date)
+    var availableProjects: [String: Date] = [:]
 
     // MARK: - Settings
 
@@ -105,12 +105,13 @@ final class AppState {
         // Save to file
         try await logFileService.appendEntry(entry)
 
-        // Update autocomplete data
+        // Update autocomplete data with current timestamp
+        let now = Date()
         if let entryType = entry.type {
-            availableTypes.insert(entryType)
+            availableTypes[entryType] = now
         }
         if let entryProject = entry.project {
-            availableProjects.insert(entryProject)
+            availableProjects[entryProject] = now
         }
 
         // Clear fields and hide panel
@@ -123,12 +124,12 @@ final class AppState {
         logFileService = LogFileService(fileURL: logFileURL)
 
         do {
-            availableTypes = try await logFileService.extractTypes()
-            availableProjects = try await logFileService.extractProjects()
+            availableTypes = try await logFileService.extractTypesWithRecency()
+            availableProjects = try await logFileService.extractProjectsWithRecency()
         } catch {
-            // If file doesn't exist yet, just use empty sets
-            availableTypes = []
-            availableProjects = []
+            // If file doesn't exist yet, just use empty dictionaries
+            availableTypes = [:]
+            availableProjects = [:]
         }
     }
 

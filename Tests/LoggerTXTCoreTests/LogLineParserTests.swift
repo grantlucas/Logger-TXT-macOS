@@ -115,4 +115,59 @@ struct LogLineParserTests {
         #expect(entries[1].lineNumber == 2)
         #expect(entries[2].lineNumber == 3)
     }
+
+    // MARK: - Recency Extraction Tests
+
+    @Test("Extract types with recency keeps most recent date")
+    func extractTypesWithRecencyKeepsMostRecentDate() {
+        let olderDate = DateFormatting.parseFromLog("10/02/26 08:00")!
+        let newerDate = DateFormatting.parseFromLog("10/02/26 12:00")!
+
+        let entries = [
+            LogEntry(lineNumber: 1, timestamp: olderDate, timezoneOffset: "-0800", type: "WORK", message: "msg"),
+            LogEntry(lineNumber: 2, timestamp: newerDate, timezoneOffset: "-0800", type: "WORK", message: "msg"),
+            LogEntry(lineNumber: 3, timestamp: olderDate, timezoneOffset: "-0800", type: "HOME", message: "msg")
+        ]
+
+        let typesWithRecency = LogLineParser.extractTypesWithRecency(from: entries)
+
+        #expect(typesWithRecency.count == 2)
+        #expect(typesWithRecency["WORK"] == newerDate)  // Most recent date for WORK
+        #expect(typesWithRecency["HOME"] == olderDate)
+    }
+
+    @Test("Extract projects with recency keeps most recent date")
+    func extractProjectsWithRecencyKeepsMostRecentDate() {
+        let olderDate = DateFormatting.parseFromLog("10/02/26 08:00")!
+        let newerDate = DateFormatting.parseFromLog("10/02/26 12:00")!
+
+        let entries = [
+            LogEntry(lineNumber: 1, timestamp: olderDate, timezoneOffset: "-0800", type: "WORK", project: "ALPHA", message: "msg"),
+            LogEntry(lineNumber: 2, timestamp: newerDate, timezoneOffset: "-0800", type: "WORK", project: "ALPHA", message: "msg"),
+            LogEntry(lineNumber: 3, timestamp: olderDate, timezoneOffset: "-0800", type: "WORK", project: "BETA", message: "msg")
+        ]
+
+        let projectsWithRecency = LogLineParser.extractProjectsWithRecency(from: entries)
+
+        #expect(projectsWithRecency.count == 2)
+        #expect(projectsWithRecency["ALPHA"] == newerDate)  // Most recent date for ALPHA
+        #expect(projectsWithRecency["BETA"] == olderDate)
+    }
+
+    @Test("Extract types with recency skips nil types")
+    func extractTypesWithRecencySkipsNilTypes() {
+        let date = DateFormatting.parseFromLog("10/02/26 08:00")!
+
+        let entries = [
+            LogEntry(lineNumber: 1, timestamp: date, timezoneOffset: "-0800", type: "WORK", message: "msg"),
+            LogEntry(lineNumber: 2, timestamp: date, timezoneOffset: "-0800", type: nil, message: "no type"),
+            LogEntry(lineNumber: 3, timestamp: date, timezoneOffset: "-0800", type: "HOME", message: "msg")
+        ]
+
+        let typesWithRecency = LogLineParser.extractTypesWithRecency(from: entries)
+
+        #expect(typesWithRecency.count == 2)
+        #expect(typesWithRecency["WORK"] != nil)
+        #expect(typesWithRecency["HOME"] != nil)
+    }
 }
