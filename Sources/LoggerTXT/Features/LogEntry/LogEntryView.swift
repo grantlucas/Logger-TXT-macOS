@@ -76,6 +76,11 @@ struct LogEntryView: View {
         .onAppear {
             focusedField = .message
         }
+        .onChange(of: appState.isEntryPanelShowing) { _, isShowing in
+            if isShowing {
+                focusedField = .message
+            }
+        }
         .onKeyPress(.escape) {
             onDismiss()
             return .handled
