@@ -1,0 +1,80 @@
+10/02/26 08:15 -0800 - Starting the day with coffee and planning out the week ahead
+10/02/26 08:32 -0800 - FREELANCE (OAKMONT) - Got feedback from the Oakmont client on the dashboard mockups. They want more emphasis on the analytics section
+10/02/26 09:01 -0800 - FREELANCE (OAKMONT) - Revising the analytics panel layout based on their notes. Moving the KPI cards above the fold
+10/02/26 09:45 -0800 - GAMEDEV - Need to figure out what's causing the inventory system to drop items on scene transitions
+10/02/26 10:12 -0800 - GAMEDEV (WANDERLUST) - Found it. The item references weren't being marked as DontDestroyOnLoad. Classic mistake
+10/02/26 10:30 -0800 - Quick break to stretch. Been hunched over for too long
+10/02/26 10:47 -0800 - GAMEDEV (WANDERLUST) - Inventory persistence is working now. Testing with various item types to make sure nothing breaks
+10/02/26 11:15 -0800 - FREELANCE - Invoiced the Henderson project. Finally wrapped that one up after three rounds of revisions
+10/02/26 11:28 -0800 - HOME - Vet appointment for Luna is at 2pm. Need to remember to grab her carrier from the closet
+10/02/26 12:05 -0800 - Lunch break. Heating up leftovers from last night
+10/02/26 12:41 -0800 - GAMEDEV (WANDERLUST) - Starting work on the merchant NPC dialogue system. Want it to feel more dynamic than just static text
+10/02/26 13:22 -0800 - GAMEDEV (WANDERLUST) - Sketched out a basic mood system for merchants. Prices could fluctuate based on player reputation
+10/02/26 13:45 -0800 - HOME - Heading out to the vet now
+10/02/26 15:10 -0800 - HOME - Luna's all good. Just needed her annual shots. She was NOT happy about the car ride though
+10/02/26 15:34 -0800 - FREELANCE (OAKMONT) - Back at it. Sending over the revised dashboard designs
+10/02/26 16:02 -0800 - FREELANCE (OAKMONT) - They approved the revisions! Final payment should come through by end of week
+10/02/26 16:15 -0800 - LEARNING - Going to spend some time with that Godot 4 tutorial series I bookmarked
+10/02/26 17:30 -0800 - LEARNING - The new signal system in Godot 4 is actually pretty elegant once you get used to it
+10/02/26 18:00 -0800 - Done for the day. Making dinner and then probably some gaming
+11/02/26 07:55 -0800 - Early start today. Marcus wants to sync about the podcast
+11/02/26 08:20 -0800 - PODCAST (PIXELCAST) - Call with Marcus. We're thinking of doing an episode on procedural generation techniques
+11/02/26 08:45 -0800 - PODCAST (PIXELCAST) - Outlined the episode structure. I'll handle the technical breakdown section
+11/02/26 09:10 -0800 - GAMEDEV (WANDERLUST) - Implementing the basic merchant mood system I designed yesterday
+11/02/26 09:58 -0800 - GAMEDEV (WANDERLUST) - Merchants now have a simple state machine: friendly, neutral, hostile. Affects dialogue options and prices
+11/02/26 10:30 -0800 - ADMIN - Dealing with some banking stuff. Need to set up that new savings account
+11/02/26 10:52 -0800 - ADMIN - Finally opened the high-yield savings. Should've done this months ago
+11/02/26 11:15 -0800 - FREELANCE - Got a lead on a potential project from Jenna's referral. Mobile app for a local bakery
+11/02/26 11:40 -0800 - FREELANCE (SWEETSPOT) - Initial call with the bakery owner. They want online ordering and a loyalty points system
+11/02/26 12:15 -0800 - Grabbing lunch at the cafe down the street. Need to get out of the apartment
+11/02/26 13:20 -0800 - FREELANCE (SWEETSPOT) - Putting together a rough estimate for the bakery app. Thinking React Native for cross-platform
+11/02/26 14:05 -0800 - GAMEDEV - Reading through some devlogs from other indie devs. Good for motivation and learning
+11/02/26 14:45 -0800 - GAMEDEV (WANDERLUST) - Had an idea for a reputation system that ties into the merchant moods. Players could become known in different towns
+11/02/26 15:30 -0800 - GAMEDEV (WANDERLUST) - Started a design doc for the reputation system. Don't want to overcomplicate it
+11/02/26 16:15 -0800 - HOME - Neighbor asked if I could grab their packages while they're away this week
+11/02/26 16:22 -0800 - GAMEDEV (WANDERLUST) - Back to coding. Connecting reputation values to the merchant state machine
+11/02/26 17:00 -0800 - GAMEDEV (WANDERLUST) - Basic reputation affecting prices is working. High rep = 10% discount, low rep = 15% markup
+11/02/26 17:45 -0800 - Wrapping up. Good progress today on both freelance and game stuff
+12/02/26 08:00 -0800 - Woke up to an email from a game jam organizer. Theme announcement is this weekend
+12/02/26 08:25 -0800 - GAMEDEV - Might participate in the jam. Good for keeping skills sharp and networking
+12/02/26 09:00 -0800 - FREELANCE (SWEETSPOT) - Sent over the estimate to the bakery. Ball's in their court now
+12/02/26 09:35 -0800 - PODCAST (PIXELCAST) - Recording session for the procedural gen episode. Marcus handled the intro well
+12/02/26 10:45 -0800 - PODCAST (PIXELCAST) - Recording done. Need to edit out that part where my mic picked up Luna meowing
+12/02/26 11:10 -0800 - GAMEDEV (WANDERLUST) - Bug report from the Discord playtester group. Saving during merchant interaction causes a crash
+12/02/26 11:42 -0800 - GAMEDEV (WANDERLUST) - Reproduced the bug. The save system is trying to serialize the active dialogue state incorrectly
+12/02/26 12:15 -0800 - Quick lunch at my desk while debugging
+12/02/26 12:55 -0800 - GAMEDEV (WANDERLUST) - Fixed the save crash. Added proper serialization for dialogue states and wrote a test case
+12/02/26 13:30 -0800 - GAMEDEV (WANDERLUST) - Pushed the fix to the beta branch. Letting playtesters know it should be resolved
+12/02/26 14:00 -0800 - LEARNING - Taking a break from my projects to learn about ECS architecture. Might refactor Wanderlust eventually
+12/02/26 15:15 -0800 - LEARNING - ECS is interesting but would be a massive undertaking to retrofit. Maybe for the next project
+12/02/26 15:45 -0800 - HOME - Need to run to the hardware store. Kitchen faucet is leaking again
+12/02/26 17:10 -0800 - HOME - Faucet fixed. Just needed a new washer. Saved myself a plumber call
+12/02/26 17:35 -0800 - FREELANCE (SWEETSPOT) - They accepted the estimate! Starting next week. Need to set up the project repo
+12/02/26 18:00 -0800 - Good day overall. Bakery project locked in and Wanderlust bug squashed
+13/02/26 09:15 -0800 - Slept in a bit. Needed it after a productive week
+13/02/26 09:40 -0800 - GAMEDEV - Game jam theme dropped: "Connections". Brainstorming ideas
+13/02/26 10:05 -0800 - GAMEDEV (JAMGAME) - Thinking about a puzzle game where you literally draw connections between nodes to solve problems
+13/02/26 10:30 -0800 - GAMEDEV (JAMGAME) - Or maybe something more metaphorical. Reconnecting with old friends mechanic?
+13/02/26 11:00 -0800 - GAMEDEV (JAMGAME) - Going with the node connection puzzle idea. More scope-appropriate for a 48hr jam
+13/02/26 11:45 -0800 - GAMEDEV (JAMGAME) - Basic prototype running. Can draw lines between nodes. Need to add the puzzle logic
+13/02/26 12:30 -0800 - Lunch break. Ordered delivery so I don't have to stop for long
+13/02/26 13:15 -0800 - GAMEDEV (JAMGAME) - Puzzle validation working. Lines can't cross, and each node needs exactly the right number of connections
+13/02/26 14:45 -0800 - GAMEDEV (JAMGAME) - Added 5 tutorial levels. Difficulty ramping feels okay
+13/02/26 15:30 -0800 - GAMEDEV (JAMGAME) - Working on the visual polish. Minimalist style with glowing lines
+13/02/26 16:40 -0800 - GAMEDEV (JAMGAME) - Sound effects from freesound. Satisfying little click when connections are made
+13/02/26 17:30 -0800 - GAMEDEV (JAMGAME) - 15 levels total now. Brain is getting tired of designing puzzles
+13/02/26 18:45 -0800 - GAMEDEV (JAMGAME) - Submitted! Called it "Linkage". Happy with how it turned out for a day's work
+13/02/26 19:00 -0800 - Exhausted but satisfied. Time to actually relax this evening
+14/02/26 10:00 -0800 - Lazy morning after the jam push. Just catching up on emails
+14/02/26 10:35 -0800 - GAMEDEV (JAMGAME) - Already got a few ratings on Linkage. One person said they liked the minimalist aesthetic
+14/02/26 11:00 -0800 - FREELANCE (SWEETSPOT) - Setting up the project structure for the bakery app. React Native with Expo
+14/02/26 11:45 -0800 - FREELANCE (SWEETSPOT) - Basic navigation skeleton done. Home, Menu, Cart, Account screens
+14/02/26 12:20 -0800 - Going for a walk. Weather's actually nice for once
+14/02/26 13:30 -0800 - PODCAST (PIXELCAST) - Edited the procedural generation episode. Cut it down from 90 min to a tight 55
+14/02/26 14:15 -0800 - PODCAST (PIXELCAST) - Episode uploaded and scheduled for Thursday release
+14/02/26 14:45 -0800 - GAMEDEV (WANDERLUST) - Playtester feedback coming in. People are really liking the merchant personality system
+14/02/26 15:10 -0800 - GAMEDEV (WANDERLUST) - One suggestion to add visual indicators for merchant mood. Good idea actually
+14/02/26 15:55 -0800 - GAMEDEV (WANDERLUST) - Added subtle color tinting to merchant portraits based on mood. Green-ish for friendly, red-ish for hostile
+14/02/26 16:30 -0800 - ADMIN - Tax stuff reminder. Need to gather all the freelance income docs soon
+14/02/26 16:45 -0800 - ADMIN - Started a spreadsheet to track income and expenses. Should've been doing this all along
+14/02/26 17:20 -0800 - Calling it a day. Pizza night with some online gaming with the old college crew
