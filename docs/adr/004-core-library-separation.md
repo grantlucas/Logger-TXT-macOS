@@ -7,12 +7,14 @@ Accepted
 ## Context
 
 The app has significant business logic:
+
 - Log file format parsing and generation
 - Date formatting in specific formats
 - Autocomplete matching algorithms
 - File read/write operations
 
 This logic needed to be:
+
 - Thoroughly tested
 - Reusable (potentially in CLI tools or other apps)
 - Independent of UI framework
@@ -25,7 +27,8 @@ We split the project into two targets:
 2. **LoggerTXT** - SwiftUI app that depends on LoggerTXTCore
 
 LoggerTXTCore contains:
-```
+
+```text
 LoggerTXTCore/
 ├── Models/
 │   ├── LogEntry.swift      # Data model
@@ -47,7 +50,8 @@ LoggerTXTCore/
 - **TDD workflow**: Could write tests first, then implementation
 - **Clear boundaries**: UI code doesn't leak into business logic
 - **Reusability**: LoggerTXTCore could be used by a CLI tool
-- **Fast test cycle**: `swift test` runs only the core library tests (no UI)
+- **Fast test cycle**: `swift test` runs only the core library tests
+  (no UI)
 
 ### Negative
 
@@ -58,6 +62,7 @@ LoggerTXTCore/
 ### Test Coverage
 
 The core library has comprehensive tests:
+
 - `LogEntryTests` - Model creation and factory methods
 - `LogLineFormatterTests` - Format output matches expected
 - `LogLineParserTests` - Parsing all entry variants
@@ -65,6 +70,7 @@ The core library has comprehensive tests:
 - `AutocompleteMatcherTests` - Prefix/contains matching
 
 Example test:
+
 ```swift
 @Test("Format entry with type and project")
 func formatWithTypeAndProject() {
@@ -77,10 +83,14 @@ func formatWithTypeAndProject() {
         message: "Got feedback"
     )
     let formatted = LogLineFormatter.format(entry)
-    #expect(formatted == "2→10/02/26 08:15 -0800 - FREELANCE (OAKMONT) - Got feedback")
+    let expected = "2→10/02/26 08:15 -0800 - FREELANCE (OAKMONT) - Got feedback"
+    #expect(formatted == expected)
 }
 ```
 
 ### Why This Worked Well
 
-The TDD approach caught a critical issue early: ensuring the Unicode arrow character (→) was used correctly in the format. If we'd written the UI first and tested manually, this subtle character difference might have caused bash script compatibility issues.
+The TDD approach caught a critical issue early: ensuring the Unicode arrow
+character (→) was used correctly in the format. If we'd written the UI
+first and tested manually, this subtle character difference might have
+caused bash script compatibility issues.

@@ -6,7 +6,8 @@ Accepted
 
 ## Context
 
-A core feature of Logger-TXT is the global hotkey (⌘K by default) that summons the entry window from any application. This requires:
+A core feature of Logger-TXT is the global hotkey (⌘K by default) that
+summons the entry window from any application. This requires:
 
 1. Registering a system-wide keyboard shortcut
 2. Receiving callbacks when the shortcut is pressed
@@ -14,13 +15,15 @@ A core feature of Logger-TXT is the global hotkey (⌘K by default) that summons
 4. Persisting the user's choice
 
 Options considered:
+
 1. **Carbon API (CGEventTap)** - Low-level, deprecated, complex
 2. **MASShortcut** - Objective-C library, widely used
 3. **KeyboardShortcuts** - Pure Swift, SwiftUI-native, by Sindre Sorhus
 
 ## Decision
 
-We chose [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) (v2.0+) because:
+We chose [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts)
+(v2.0+) because:
 
 - Pure Swift, SwiftUI-native
 - Well-maintained by a reputable developer
@@ -28,10 +31,14 @@ We chose [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) 
 - Built-in persistence
 
 Usage:
+
 ```swift
 // Define the shortcut name with default
 extension KeyboardShortcuts.Name {
-    static let showLogEntry = Self("showLogEntry", default: .init(.k, modifiers: .command))
+    static let showLogEntry = Self(
+        "showLogEntry",
+        default: .init(.k, modifiers: .command)
+    )
 }
 
 // Register handler
@@ -62,6 +69,7 @@ KeyboardShortcuts.Recorder(for: .showLogEntry)
 ### Integration Points
 
 **AppDelegate.swift** - Registers the hotkey on launch:
+
 ```swift
 func applicationDidFinishLaunching(_ notification: Notification) {
     KeyboardShortcuts.onKeyDown(for: .showLogEntry) { [weak self] in
@@ -73,6 +81,7 @@ func applicationDidFinishLaunching(_ notification: Notification) {
 ```
 
 **PreferencesView.swift** - Provides the recorder UI:
+
 ```swift
 struct HotkeyPreferencesView: View {
     var body: some View {
@@ -88,6 +97,7 @@ struct HotkeyPreferencesView: View {
 ### Why Not Native APIs?
 
 Apple's native APIs for global shortcuts are either:
+
 - **Carbon-based** (deprecated, complex event tap registration)
 - **Accessibility-dependent** (requires special permissions)
 

@@ -13,6 +13,7 @@ We needed a state management solution for the app. Options considered:
 3. **Third-party (TCA, etc.)** - External state management frameworks
 
 Requirements:
+
 - Reactive updates when state changes
 - Simple, minimal boilerplate
 - Works well with SwiftUI
@@ -35,6 +36,7 @@ final class AppState {
 ```
 
 Views use `@Bindable` to get bindings:
+
 ```swift
 struct LogEntryView: View {
     @Bindable var appState: AppState
@@ -56,7 +58,8 @@ struct LogEntryView: View {
 
 - **macOS 14+ required**: The `@Observable` macro requires macOS 14 (Sonoma)
 - **Learning curve**: Different mental model from ObservableObject
-- **Initialization gotcha**: Self-reference before all properties initialized can cause errors
+- **Initialization gotcha**: Self-reference before all properties
+  initialized can cause errors
 
 ### Pitfall Encountered
 
@@ -69,9 +72,11 @@ init() {
 }
 ```
 
-The error: "self used in property access 'logFileURL' before all stored properties are initialized"
+The error: "self used in property access 'logFileURL' before all stored
+properties are initialized"
 
 **Solution**: Use a local variable:
+
 ```swift
 init() {
     let url = /* computed */
@@ -80,4 +85,5 @@ init() {
 }
 ```
 
-This is a Swift initialization order issue, not specific to `@Observable`, but the macro's code generation can make it less obvious.
+This is a Swift initialization order issue, not specific to `@Observable`,
+but the macro's code generation can make it less obvious.

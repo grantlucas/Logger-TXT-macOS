@@ -7,11 +7,13 @@ Accepted
 ## Context
 
 File operations (read, write, append) need to be:
+
 1. **Thread-safe**: Multiple parts of the app might access the log file
 2. **Async**: File I/O shouldn't block the main thread
 3. **Sequential**: Writes must happen in order to maintain log integrity
 
 Swift provides several concurrency options:
+
 1. **DispatchQueue** - GCD, traditional approach
 2. **Actor** - Swift concurrency, built-in isolation
 3. **@MainActor class** - Run everything on main thread
@@ -33,6 +35,7 @@ public actor LogFileService {
 ```
 
 Callers use async/await:
+
 ```swift
 let lineNumber = try await logFileService.getNextLineNumber()
 try await logFileService.appendEntry(entry)
@@ -56,6 +59,7 @@ try await logFileService.appendEntry(entry)
 ### Usage Pattern
 
 In AppState (which is `@MainActor`), we call the actor:
+
 ```swift
 func saveEntry() async throws {
     try await logFileService.createIfNeeded()
@@ -66,6 +70,7 @@ func saveEntry() async throws {
 ```
 
 From SwiftUI views:
+
 ```swift
 Button("Save") {
     Task {
@@ -76,7 +81,9 @@ Button("Save") {
 
 ### Alternative Considered
 
-We could have made LogFileService a `@MainActor` class to avoid async complexity, but:
+We could have made LogFileService a `@MainActor` class to avoid async
+complexity, but:
+
 - File I/O would block the main thread
 - Large log files could cause UI stuttering
 - Not a scalable pattern
@@ -86,8 +93,10 @@ The actor approach is more correct, even if slightly more complex.
 ### Thread Safety Guarantee
 
 With an actor, this sequence is safe:
+
 1. Read file to get next line number
 2. Create entry with that line number
 3. Append entry to file
 
-Without an actor, a race condition could cause two entries with the same line number.
+Without an actor, a race condition could cause two entries with the same
+line number.

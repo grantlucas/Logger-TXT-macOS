@@ -6,7 +6,8 @@ N/A (Retrospective document)
 
 ## Overview
 
-This document captures what worked well, what didn't, and pitfalls encountered during the Logger-TXT Swift rewrite.
+This document captures what worked well, what didn't, and pitfalls
+encountered during the Logger-TXT Swift rewrite.
 
 ---
 
@@ -57,16 +58,21 @@ Swift Package Manager was perfect for AI-assisted development:
 
 ### 1. SwiftUI `onKeyPress` with Modifiers
 
-**Problem**: Tried to use `onKeyPress(.return, modifiers: .command)` for ⌘Enter save shortcut.
+**Problem**: Tried to use `onKeyPress(.return, modifiers: .command)` for
+⌘Enter save shortcut.
 
 **Error**:
-```
+
+```text
 extra arguments at positions #2, #3 in call
 ```
 
-**Cause**: macOS 14's SwiftUI `onKeyPress` doesn't support the `modifiers:` parameter.
+**Cause**: macOS 14's SwiftUI `onKeyPress` doesn't support the `modifiers:`
+parameter.
 
-**Solution**: Used a Button with `.keyboardShortcut(.return, modifiers: .command)` instead:
+**Solution**: Used a Button with `.keyboardShortcut(.return, modifiers:
+.command)` instead:
+
 ```swift
 Button("Save") { saveEntry() }
     .keyboardShortcut(.return, modifiers: .command)
@@ -74,16 +80,21 @@ Button("Save") { saveEntry() }
 
 ### 2. @Observable Initialization Order
 
-**Problem**: Compilation error when initializing LogFileService with a computed property.
+**Problem**: Compilation error when initializing LogFileService with a
+computed property.
 
 **Error**:
-```
-'self' used in property access 'logFileURL' before all stored properties are initialized
+
+```text
+'self' used in property access 'logFileURL' before all stored properties
+are initialized
 ```
 
-**Cause**: Swift requires all stored properties to be initialized before accessing any property via `self`.
+**Cause**: Swift requires all stored properties to be initialized before
+accessing any property via `self`.
 
 **Solution**: Use a local variable:
+
 ```swift
 init() {
     let url = /* computed value */
@@ -95,6 +106,7 @@ init() {
 ### 3. App Struct Init with Escaping Closure
 
 **Problem**: Tried to connect AppState to AppDelegate in init:
+
 ```swift
 init() {
     Task { @MainActor in
@@ -104,13 +116,16 @@ init() {
 ```
 
 **Error**:
-```
+
+```text
 escaping closure captures mutating 'self' parameter
 ```
 
-**Cause**: Task closure escapes, but `init()` context doesn't allow escaping self capture.
+**Cause**: Task closure escapes, but `init()` context doesn't allow
+escaping self capture.
 
 **Solution**: Moved to `.onAppear` in the view:
+
 ```swift
 var body: some Scene {
     MenuBarExtra(...) {
@@ -127,13 +142,16 @@ var body: some Scene {
 **Problem**: Initial `swift build` failed.
 
 **Error**:
-```
+
+```text
 target 'LoggerTXT' referenced in product 'LoggerTXT' is empty
 ```
 
-**Cause**: Created directory structure but no source files in LoggerTXT target.
+**Cause**: Created directory structure but no source files in LoggerTXT
+target.
 
-**Solution**: Created minimal `LoggerTXTApp.swift` placeholder, then expanded it.
+**Solution**: Created minimal `LoggerTXTApp.swift` placeholder, then
+expanded it.
 
 ---
 
@@ -142,6 +160,7 @@ target 'LoggerTXT' referenced in product 'LoggerTXT' is empty
 ### 1. NSPanel Over Pure SwiftUI Window
 
 The hybrid approach (NSPanel + SwiftUI content) was essential:
+
 - Pure SwiftUI can't create true floating panels
 - NSPanel's `didResignKeyNotification` enables click-outside-to-close
 - SwiftUI handles all the form UI beautifully
@@ -149,6 +168,7 @@ The hybrid approach (NSPanel + SwiftUI content) was essential:
 ### 2. Conventional Commits
 
 Making atomic commits at logical boundaries:
+
 - Each commit is a working checkpoint
 - Easy to bisect if issues arise
 - Clear history of what changed when
@@ -156,6 +176,7 @@ Making atomic commits at logical boundaries:
 ### 3. AGENTS.md / CLAUDE.md
 
 Creating project documentation early:
+
 - Provides context for future AI sessions
 - Documents critical constraints (log format!)
 - Reduces ramp-up time
@@ -166,11 +187,13 @@ Creating project documentation early:
 
 ### 1. Start with UI Spike
 
-We built the core library first (TDD). While this was thorough, a quick UI spike first might have revealed the SwiftUI `onKeyPress` limitation earlier.
+We built the core library first (TDD). While this was thorough, a quick UI
+spike first might have revealed the SwiftUI `onKeyPress` limitation earlier.
 
 ### 2. More Integration Tests
 
 Unit tests are comprehensive, but we lack:
+
 - End-to-end test that creates an entry and verifies file output
 - UI automation tests
 - Format round-trip verification test
@@ -178,6 +201,7 @@ Unit tests are comprehensive, but we lack:
 ### 3. Error Handling
 
 Current error handling is minimal:
+
 - Errors are printed to console
 - No user-visible error messages
 - Could add alert dialogs for common failures
@@ -187,9 +211,11 @@ Current error handling is minimal:
 ## Summary
 
 The rewrite succeeded because of:
+
 1. **Clear constraints** (preserve log format)
 2. **Testable architecture** (core library separation)
 3. **Incremental delivery** (phased approach)
 4. **Right tool choices** (SPM, KeyboardShortcuts, @Observable)
 
-The main challenges were Swift/SwiftUI API limitations that required workarounds, not fundamental architectural issues.
+The main challenges were Swift/SwiftUI API limitations that required
+workarounds, not fundamental architectural issues.
