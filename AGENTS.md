@@ -67,3 +67,37 @@ Run tests with `swift test`. The core library is designed for testability - all 
 - ⌘Enter saves entry and closes
 - Type and Project fields autocomplete from existing log entries
 - Arrow keys navigate autocomplete suggestions
+
+## Project Structure
+
+```
+Sources/
+├── LoggerTXT/              # Main app (executable target)
+│   ├── App/
+│   │   ├── LoggerTXTApp.swift    # @main entry point with MenuBarExtra
+│   │   ├── AppState.swift        # @Observable root state
+│   │   └── AppDelegate.swift     # NSPanel management, hotkey setup
+│   └── Features/
+│       ├── LogEntry/
+│       │   ├── LogEntryPanel.swift    # NSPanel subclass
+│       │   └── LogEntryView.swift     # SwiftUI entry form
+│       └── Preferences/
+│           └── PreferencesView.swift  # Settings UI
+└── LoggerTXTCore/          # Core library (testable business logic)
+    ├── Models/
+    │   ├── LogEntry.swift         # Entry data model
+    │   └── LogFile.swift          # Log file metadata
+    ├── Services/
+    │   ├── LogFileService.swift   # Read/write operations
+    │   ├── LogLineFormatter.swift # Format entries to text
+    │   ├── LogLineParser.swift    # Parse text to entries
+    │   └── AutocompleteMatcher.swift
+    └── Utilities/
+        └── DateFormatting.swift
+```
+
+## Default Log File Location
+
+`~/Documents/Logger-TXT/log.txt`
+
+Can be changed in Preferences.
