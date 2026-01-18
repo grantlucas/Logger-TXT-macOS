@@ -8,12 +8,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// The floating panel for log entry
     private var entryPanel: LogEntryPanel?
 
-    /// Reference to the app state
-    private weak var appState: AppState?
-
-    func setAppState(_ state: AppState) {
-        self.appState = state
-    }
+    /// The app state (owned by AppDelegate to ensure availability for hotkey)
+    let appState = AppState()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Set up global hotkey
@@ -49,8 +45,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func showEntryPanel() {
-        guard let appState = appState else { return }
-
         // Create panel if needed
         if entryPanel == nil {
             entryPanel = LogEntryPanel(appState: appState)
@@ -73,7 +67,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func hideEntryPanel() {
         entryPanel?.orderOut(nil)
-        appState?.hideEntryPanel()
+        appState.hideEntryPanel()
     }
 }
 

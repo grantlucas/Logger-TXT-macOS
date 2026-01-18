@@ -4,19 +4,14 @@ import KeyboardShortcuts
 @main
 struct LoggerTXTApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @State private var appState = AppState()
 
     var body: some Scene {
         MenuBarExtra("Logger-TXT", systemImage: "pencil.line") {
-            MenuBarContent(appState: appState, appDelegate: appDelegate)
-                .onAppear {
-                    // Connect app state to delegate when the view appears
-                    appDelegate.setAppState(appState)
-                }
+            MenuBarContent(appState: appDelegate.appState, appDelegate: appDelegate)
         }
 
         Settings {
-            PreferencesView(appState: appState)
+            PreferencesView(appState: appDelegate.appState)
         }
     }
 }
