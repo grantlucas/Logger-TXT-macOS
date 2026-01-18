@@ -59,6 +59,13 @@ struct LogLineParserTests {
         #expect(entry == nil)
     }
 
+    @Test("Parse line with invalid date returns nil")
+    func parseInvalidDate() {
+        // Matches regex pattern but not a valid date
+        let entry = LogLineParser.parse("99/99/99 99:99 -0800 - Invalid date", lineNumber: 1)
+        #expect(entry == nil)
+    }
+
     @Test("Parse entry with underscore in type")
     func parseTypeWithUnderscore() {
         let line = "10/02/26 08:15 -0800 - GAME_DEV - Working on game"

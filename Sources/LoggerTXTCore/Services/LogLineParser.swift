@@ -29,18 +29,11 @@ public enum LogLineParser {
             return nil
         }
 
-        guard let dateStr = match.output[1].substring,
-              let timeStr = match.output[2].substring else {
-            return nil
-        }
-
-        guard let timezoneStr = match.output[3].substring else {
-            return nil
-        }
-
-        guard let content = match.output[4].substring else {
-            return nil
-        }
+        // If the regex matched, all capture groups are guaranteed to have values
+        let dateStr = match.output[1].substring!
+        let timeStr = match.output[2].substring!
+        let timezoneStr = match.output[3].substring!
+        let content = match.output[4].substring!
 
         // Parse the date
         let dateTimeStr = "\(dateStr) \(timeStr)"
@@ -64,16 +57,18 @@ public enum LogLineParser {
     /// Parses the content portion of a log line to extract type, project, and message.
     private static func parseContent(_ content: String) -> (type: String?, project: String?, message: String) {
         // Try to match "TYPE (PROJECT) - message" or "TYPE - message"
-        if let match = content.firstMatch(of: try! Regex(typeProjectPattern)) {
-            let type = match.output[1].substring.map(String.init)
-            let project = match.output[2].substring.map(String.init)
-            let message = match.output[3].substring.map(String.init) ?? content
-
-            return (type: type, project: project, message: message)
+        guard let match = content.firstMatch(of: try! Regex(typeProjectPattern)) else {
+            // No type/project, the entire content is the message
+            return (type: nil, project: nil, message: content)
         }
 
-        // No type/project, the entire content is the message
-        return (type: nil, project: nil, message: content)
+        // If the regex matched, type (group 1) and message (group 3) are guaranteed
+        // Project (group 2) is optional due to the (?: ...)? in the pattern
+        let type = match.output[1].substring!
+        let message = match.output[3].substring!
+        let project = match.output[2].substring.map(String.init)
+
+        return (type: String(type), project: project, message: String(message))
     }
 
     /// Parses multiple lines and returns all successfully parsed entries.
