@@ -74,5 +74,5 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 // MARK: - Keyboard Shortcuts Extension
 
 extension KeyboardShortcuts.Name {
-    static let showLogEntry = Self("showLogEntry", default: .init(.k, modifiers: .command))
+    static let showLogEntry = Self("showLogEntry")
 }
