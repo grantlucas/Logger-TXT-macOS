@@ -20,7 +20,7 @@ struct LogEntryView: View {
             TextField("What are you working on?", text: $appState.message, axis: .vertical)
                 .textFieldStyle(.plain)
                 .font(.system(size: 16))
-                .lineLimit(3...5)
+                .lineLimit(5...7)
                 .focused($focusedField, equals: .message)
                 .onSubmit {
                     focusedField = .type
