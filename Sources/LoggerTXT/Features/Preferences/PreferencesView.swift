@@ -16,6 +16,11 @@ struct PreferencesView: View {
                 .tabItem {
                     Label("Hotkey", systemImage: "keyboard")
                 }
+
+            UtilitiesPreferencesView(appState: appState)
+                .tabItem {
+                    Label("Utilities", systemImage: "wrench.and.screwdriver")
+                }
         }
         .frame(width: 450, height: 200)
         .onAppear {
@@ -73,6 +78,41 @@ struct HotkeyPreferencesView: View {
                 Text("This hotkey will summon the log entry window from anywhere.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+            }
+        }
+        .formStyle(.grouped)
+    }
+}
+
+struct UtilitiesPreferencesView: View {
+    @Bindable var appState: AppState
+
+    var body: some View {
+        Form {
+            Section("Autocomplete Index") {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Re-scan the log file to update type and project suggestions.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    Button {
+                        Task {
+                            await appState.reloadAutocompleteData()
+                        }
+                    } label: {
+                        HStack(spacing: 6) {
+                            if appState.isRefreshingAutocomplete {
+                                ProgressView()
+                                    .controlSize(.small)
+                                Text("Refreshing...")
+                            } else {
+                                Image(systemName: "arrow.clockwise")
+                                Text("Refresh Index")
+                            }
+                        }
+                    }
+                    .disabled(appState.isRefreshingAutocomplete)
+                }
             }
         }
         .formStyle(.grouped)

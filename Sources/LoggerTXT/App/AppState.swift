@@ -27,6 +27,9 @@ final class AppState {
     /// Available projects for autocomplete (name -> last used date)
     var availableProjects: [String: Date] = [:]
 
+    /// Whether the autocomplete index is currently being refreshed
+    var isRefreshingAutocomplete: Bool = false
+
     // MARK: - Settings
 
     /// The URL of the log file
@@ -116,6 +119,9 @@ final class AppState {
 
     /// Reloads autocomplete data from the log file
     func reloadAutocompleteData() async {
+        isRefreshingAutocomplete = true
+        defer { isRefreshingAutocomplete = false }
+
         // Update service with current URL
         logFileService = LogFileService(fileURL: logFileURL)
 
