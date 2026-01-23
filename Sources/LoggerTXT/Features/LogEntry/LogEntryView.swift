@@ -12,6 +12,7 @@ struct LogEntryView: View {
         case message
         case type
         case project
+        case saveButton
     }
 
     var body: some View {
@@ -48,7 +49,7 @@ struct LogEntryView: View {
                     isFocused: focusedField == .project,
                     isDisabled: appState.message.isEmpty,
                     onFocus: { focusedField = .project },
-                    onTab: { focusedField = .message }
+                    onTab: { focusedField = .saveButton }
                 )
                 .focused($focusedField, equals: .project)
             }
@@ -66,6 +67,17 @@ struct LogEntryView: View {
                 .keyboardShortcut(.return, modifiers: .command)
                 .buttonStyle(.borderedProminent)
                 .disabled(appState.message.isEmpty)
+                .focused($focusedField, equals: .saveButton)
+                .onKeyPress(.tab) {
+                    focusedField = .message
+                    return .handled
+                }
+                .onKeyPress(.return) {
+                    if !appState.message.isEmpty {
+                        saveEntry()
+                    }
+                    return .handled
+                }
             }
         }
         .padding(16)
