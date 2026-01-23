@@ -18,6 +18,9 @@ struct PreferencesView: View {
                 }
         }
         .frame(width: 450, height: 200)
+        .onAppear {
+            NSApp.activate(ignoringOtherApps: true)
+        }
     }
 }
 
