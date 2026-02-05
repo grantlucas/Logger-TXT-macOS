@@ -101,6 +101,7 @@ struct LogEntryView: View {
             }
         }
         .onKeyPress(.escape) {
+            appState.cancelEntry()
             onDismiss()
             return .handled
         }

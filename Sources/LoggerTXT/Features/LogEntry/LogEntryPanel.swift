@@ -75,9 +75,9 @@ final class LogEntryPanel: NSPanel {
     }
 
     override func cancelOperation(_ sender: Any?) {
-        // Handle Escape key
+        // Handle Escape key - clear all input and hide
         orderOut(nil)
-        appState.hideEntryPanel()
+        appState.cancelEntry()
     }
 
     override var canBecomeKey: Bool { true }

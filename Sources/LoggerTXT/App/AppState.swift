@@ -66,16 +66,21 @@ final class AppState {
 
     // MARK: - Actions
 
-    /// Shows the log entry panel
+    /// Shows the log entry panel (preserves existing input)
     func showEntryPanel() {
-        clearFields()
         isEntryPanelShowing = true
     }
 
-    /// Hides the log entry panel
+    /// Hides the log entry panel without clearing fields
+    /// (preserves input if user accidentally loses focus)
     func hideEntryPanel() {
         isEntryPanelShowing = false
+    }
+
+    /// Cancels entry and clears all fields (used for ESC key)
+    func cancelEntry() {
         clearFields()
+        isEntryPanelShowing = false
     }
 
     /// Clears all input fields
@@ -114,6 +119,7 @@ final class AppState {
         }
 
         // Clear fields and hide panel
+        clearFields()
         hideEntryPanel()
     }
 
