@@ -62,6 +62,17 @@ struct LogEntryView: View {
             // Keyboard shortcuts hint and save button
             HStack {
                 Spacer()
+
+                if appState.isRefreshingAutocomplete {
+                    HStack(spacing: 4) {
+                        ProgressView()
+                            .controlSize(.small)
+                        Text("Indexing...")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
                 Text("⎋ Cancel")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -71,7 +82,7 @@ struct LogEntryView: View {
                 }
                 .keyboardShortcut(.return, modifiers: .command)
                 .buttonStyle(.borderedProminent)
-                .disabled(appState.message.isEmpty)
+                .disabled(appState.message.isEmpty || appState.isRefreshingAutocomplete)
                 .focused($focusedField, equals: .saveButton)
                 .onKeyPress(.tab) {
                     focusedField = .message
