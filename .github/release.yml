@@ -1,0 +1,29 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+  categories:
+    - title: Breaking Changes 🛠
+      labels:
+        - breaking-change
+    - title: New Features 🎉
+      labels:
+        - enhancement
+    - title: Bug Fixes 🐞
+      labels:
+        - bug-fix
+        - bug
+    - title: Performance Optimization ⚡
+      labels:
+        - performance
+        - performance-optimization
+    - title: Dependencies 🔨
+      labels:
+        - dependencies
+    - title: DevEx Improvements 👷
+      labels:
+        - developer-experience
+        - documentation
+    - title: Other Changes
+      labels:
+        - "*"
