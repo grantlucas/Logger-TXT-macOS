@@ -11,6 +11,9 @@ public enum LogLineParser {
     /// Pattern for type and optional project: "TYPE (PROJECT) - " or "TYPE - "
     private static let typeProjectPattern = #"^([A-Z0-9_]+)(?: \(([^)]+)\))? - (.+)$"#
 
+    /// Pattern for project only: "(PROJECT) - message"
+    private static let projectOnlyPattern = #"^\(([^)]+)\) - (.+)$"#
+
     /// Parses a single log line into a LogEntry.
     /// - Parameter line: The log line to parse
     /// - Returns: A LogEntry if parsing succeeds, nil otherwise
@@ -55,6 +58,12 @@ public enum LogLineParser {
     private static func parseContent(_ content: String) -> (type: String?, project: String?, message: String) {
         // Try to match "TYPE (PROJECT) - message" or "TYPE - message"
         guard let match = content.firstMatch(of: try! Regex(typeProjectPattern)) else {
+            // Try to match "(PROJECT) - message"
+            if let projectMatch = content.firstMatch(of: try! Regex(projectOnlyPattern)) {
+                let project = projectMatch.output[1].substring!
+                let message = projectMatch.output[2].substring!
+                return (type: nil, project: String(project), message: String(message))
+            }
             // No type/project, the entire content is the message
             return (type: nil, project: nil, message: content)
         }

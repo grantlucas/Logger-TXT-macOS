@@ -38,6 +38,17 @@ struct LogLineParserTests {
         #expect(entry?.message == "Got feedback from the Oakmont client")
     }
 
+    @Test("Parse entry with project only")
+    func parseWithProjectOnly() {
+        let line = "10/02/26 08:15 -0800 - (YNAB) - Testing just a project"
+        let entry = LogLineParser.parse(line)
+
+        #expect(entry != nil)
+        #expect(entry?.type == nil)
+        #expect(entry?.project == "YNAB")
+        #expect(entry?.message == "Testing just a project")
+    }
+
     @Test("Parse empty line returns nil")
     func parseEmptyLine() {
         let entry = LogLineParser.parse("")

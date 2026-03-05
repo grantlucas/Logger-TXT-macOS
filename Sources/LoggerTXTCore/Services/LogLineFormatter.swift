@@ -2,12 +2,13 @@ import Foundation
 
 /// Formats LogEntry objects into the log file line format.
 ///
-/// Format: `{DD/MM/YY HH:MM} {±HHMM} - [{TYPE} [({PROJECT})] - ]{message}`
+/// Format: `{DD/MM/YY HH:MM} {±HHMM} - [{TYPE} [({PROJECT})] | ({PROJECT}) - ]{message}`
 ///
 /// Examples:
 /// - `10/02/26 08:15 -0800 - Just a message`
 /// - `10/02/26 08:32 -0800 - WORK - Message with type`
 /// - `10/02/26 09:00 -0800 - WORK (PROJECT) - Message with type and project`
+/// - `10/02/26 09:30 -0800 - (PROJECT) - Message with project only`
 public enum LogLineFormatter {
     /// Formats a LogEntry into the log file line format.
     public static func format(_ entry: LogEntry) -> String {
@@ -26,6 +27,8 @@ public enum LogLineFormatter {
             } else {
                 contentParts.append(type)
             }
+        } else if let project = entry.project, !project.isEmpty {
+            contentParts.append("(\(project))")
         }
 
         contentParts.append(entry.message)

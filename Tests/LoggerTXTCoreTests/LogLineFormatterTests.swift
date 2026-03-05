@@ -54,6 +54,19 @@ struct LogLineFormatterTests {
         #expect(formatted == "10/02/26 08:15 -0800 - FREELANCE (OAKMONT) - Got feedback from the Oakmont client")
     }
 
+    @Test("Format entry with project only")
+    func formatWithProjectOnly() {
+        let entry = LogEntry(
+            timestamp: testDate,
+            timezoneOffset: "-0800",
+            project: "YNAB",
+            message: "Testing just a project"
+        )
+
+        let formatted = LogLineFormatter.format(entry)
+        #expect(formatted == "10/02/26 08:15 -0800 - (YNAB) - Testing just a project")
+    }
+
     @Test("Format entry with positive timezone")
     func formatWithPositiveTimezone() {
         let entry = LogEntry(
