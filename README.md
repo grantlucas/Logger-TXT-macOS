@@ -8,6 +8,14 @@ This is a modern Swift 6/SwiftUI rewrite of Logger-TXT, which originally started
 as a [shell script][5] for command-line logging and later became an Objective-C
 macOS app.
 
+## Screenshots
+
+<!-- markdownlint-disable MD013 MD060 -->
+| Dark Mode | Light Mode |
+|:---------:|:----------:|
+| ![Entry window in dark mode](docs/screenshots/entry-window-dark.png) | ![Entry window in light mode](docs/screenshots/entry-window-light.png) |
+<!-- markdownlint-enable MD013 MD060 -->
+
 ## Features
 
 - **Global Hotkey**: Configure a hotkey to open the log entry window from
