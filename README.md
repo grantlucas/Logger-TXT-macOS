@@ -1,4 +1,4 @@
-# Logger-TXT
+# Logger-TXT - macOS GUI
 
 A lightweight macOS menu bar application for quick timestamped logging. Press a
 global hotkey, type your thought, and it's saved to a plain text file with a
