@@ -4,9 +4,15 @@ A lightweight macOS menu bar application for quick timestamped logging. Press a
 global hotkey, type your thought, and it's saved to a plain text file with a
 timestamp.
 
-This is a modern Swift 6/SwiftUI rewrite of Logger-TXT, which originally started
-as a [shell script][2] for command-line logging and later became an Objective-C
-macOS app.
+This GUI _streamlined_ my use of
+[Logger-TXT](https://github.com/grantlucas/Logger-TXT) allowing me to save
+entries swiftly increasing my usage ten-fold throughout the day. I still use the
+[CLI](https://github.com/grantlucas/Logger-TXT) for reviewing and searching
+entries but _most, if not all,_ input has been through a GUI for the past
+decade.
+
+This is a modern Swift 6/SwiftUI rewrite of the Logger-TXT GUI, which originally started
+as an Objective-C macOS app.
 
 ## Screenshots
 
