@@ -67,26 +67,23 @@ with standard Unix tools.
 ## Requirements
 
 - macOS 14.0 (Sonoma) or later
-- Xcode 16+ or Swift 6.0+ toolchain
 
 ## Installation
 
-### From Source
+### Homebrew
 
 ```bash
-# Clone the repository
-git clone https://github.com/grantlucas/Logger-TXT-OSX-Rewrite.git
-cd Logger-TXT-OSX-Rewrite
-
-# Build and run
-swift build && .build/debug/LoggerTXT
-
-# Or create an app bundle
-./Scripts/bundle.sh
-
-# Install to Applications
-cp -r .build/release/Logger-TXT.app /Applications/
+brew install --cask grantlucas/tap/logger-txt-gui
 ```
+
+### Manual Download
+
+Download the latest `.zip` from
+[Releases](https://github.com/grantlucas/Logger-TXT-OSX-Rewrite/releases),
+unzip, and drag `Logger-TXT.app` to your Applications folder.
+
+Since the app is not code-signed, you may need to right-click → Open on first
+launch to bypass Gatekeeper.
 
 ## Usage
 

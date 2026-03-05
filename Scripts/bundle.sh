@@ -8,12 +8,13 @@ cd "$(dirname "$0")/.."
 APP_NAME="Logger-TXT"
 BUNDLE_NAME="$APP_NAME.app"
 BUILD_DIR=".build/release"
+APP_VERSION="${VERSION:-2.0.0}"
 BUNDLE_DIR="$BUILD_DIR/$BUNDLE_NAME"
 CONTENTS_DIR="$BUNDLE_DIR/Contents"
 MACOS_DIR="$CONTENTS_DIR/MacOS"
 RESOURCES_DIR="$CONTENTS_DIR/Resources"
 
-echo "Building Logger-TXT for release..."
+echo "Building Logger-TXT v$APP_VERSION for release..."
 swift build -c release
 
 echo "Creating app bundle..."
@@ -29,7 +30,7 @@ mkdir -p "$RESOURCES_DIR"
 cp "$BUILD_DIR/LoggerTXT" "$MACOS_DIR/"
 
 # Create Info.plist
-cat > "$CONTENTS_DIR/Info.plist" << 'PLIST'
+cat > "$CONTENTS_DIR/Info.plist" << PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -49,7 +50,7 @@ cat > "$CONTENTS_DIR/Info.plist" << 'PLIST'
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>2.0.0</string>
+    <string>$APP_VERSION</string>
     <key>CFBundleVersion</key>
     <string>1</string>
     <key>LSMinimumSystemVersion</key>
