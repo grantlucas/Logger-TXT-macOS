@@ -101,6 +101,10 @@ Run tests with `swift test` . The core library is designed
 for testability -
 all business logic should have corresponding tests.
 
+**All code changes MUST use the `/tdd` skill.** Write failing tests first,
+implement minimal code to pass, then refactor. Commit after tests pass to
+checkpoint before moving on.
+
 ## UI Behavior
 
 - Global hotkey (user-configurable) summons the entry window
