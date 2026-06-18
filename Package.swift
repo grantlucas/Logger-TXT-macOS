@@ -11,7 +11,7 @@ let package = Package(
         .library(name: "LoggerTXTCore", targets: ["LoggerTXTCore"])
     ],
     dependencies: [
-        .package(url: "https://github.com/sindresorhus/KeyboardShortcuts", from: "2.0.0"),
+        .package(url: "https://github.com/sindresorhus/KeyboardShortcuts", from: "3.0.1"),
         .package(url: "https://github.com/sindresorhus/LaunchAtLogin-Modern", from: "1.0.0")
     ],
     targets: [
