@@ -79,7 +79,7 @@ brew install --cask grantlucas/tap/logger-txt-gui
 ### Manual Download
 
 Download the latest `.zip` from
-[Releases](https://github.com/grantlucas/Logger-TXT-OSX-Rewrite/releases),
+[Releases](https://github.com/grantlucas/Logger-TXT-macOS/releases),
 unzip, and drag `Logger-TXT.app` to your Applications folder.
 
 Since the app is not code-signed, you may need to right-click → Open on first
