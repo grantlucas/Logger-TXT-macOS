@@ -25,3 +25,10 @@ jobs:
 
       - name: Run tests
         run: swift test
+
+      # Builds the .app and verifies it carries every SwiftPM resource bundle.
+      # A dependency that ships resources traps at runtime if the bundle is not
+      # in the .app, and neither `swift build` nor `swift test` can see that —
+      # so this runs on every PR, including Dependabot bumps. See docs/adr/010.
+      - name: Build and verify app bundle
+        run: ./Scripts/bundle.sh

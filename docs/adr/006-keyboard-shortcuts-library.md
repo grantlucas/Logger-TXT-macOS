@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-A core feature of Logger-TXT is the global hotkey (⌘K by default) that
+A core feature of Logger-TXT is the user-configurable global hotkey that
 summons the entry window from any application. This requires:
 
 1. Registering a system-wide keyboard shortcut
@@ -23,7 +23,7 @@ Options considered:
 ## Decision
 
 We chose [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts)
-(v2.0+) because:
+(currently v3.0.1) because:
 
 - Pure Swift, SwiftUI-native
 - Well-maintained by a reputable developer
@@ -33,12 +33,11 @@ We chose [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts)
 Usage:
 
 ```swift
-// Define the shortcut name with default
+// Define the shortcut name. No default: the app ships with no hotkey and the
+// user picks one in Preferences. (v3 renamed the initial-shortcut label to
+// `initial:`; `default:` is deprecated.)
 extension KeyboardShortcuts.Name {
-    static let showLogEntry = Self(
-        "showLogEntry",
-        default: .init(.k, modifiers: .command)
-    )
+    static let showLogEntry = Self("showLogEntry")
 }
 
 // Register handler
@@ -65,6 +64,11 @@ KeyboardShortcuts.Recorder(for: .showLogEntry)
 - **External dependency**: Adds ~50KB to binary size
 - **macOS only**: Not cross-platform (but neither is this app)
 - **Version coupling**: Must track library updates
+- **Ships localized resources**: the library reads
+  `NSLocalizedString(..., bundle: .module)`
+  while initialising its `Recorder`, so the `.app` must carry
+  `KeyboardShortcuts_KeyboardShortcuts.bundle` or the Keyboard Shortcuts
+  preferences tab hard-traps. See ADR 010.
 
 ### Integration Points
 
