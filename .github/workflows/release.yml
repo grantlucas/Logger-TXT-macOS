@@ -76,12 +76,12 @@ jobs:
             version "${VERSION}"
             sha256 "${SHA}"
 
-            url "https://github.com/grantlucas/Logger-TXT-OSX-Rewrite/releases/download/v#{version}/Logger-TXT-#{version}-macos.zip"
+            url "https://github.com/grantlucas/Logger-TXT-macOS/releases/download/v#{version}/Logger-TXT-#{version}-macos.zip"
             name "Logger-TXT"
             desc "macOS menu bar app for quick timestamped logging"
-            homepage "https://github.com/grantlucas/Logger-TXT-OSX-Rewrite"
+            homepage "https://github.com/grantlucas/Logger-TXT-macOS"
 
-            depends_on macos: ">= :sonoma"
+            depends_on macos: :sonoma
 
             app "Logger-TXT.app"
 
