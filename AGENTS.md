@@ -37,20 +37,30 @@ make build    # Build debug version
 make release  # Build release version
 make test     # Run tests
 make run      # Build and run the app
+make run-scratch   # Run against a throwaway log file
 make stop     # Stop the running app
 make restart  # Stop and restart the app
-make bundle   # Create .app bundle
+make bundle   # Create .app bundle (verifies its resource bundles)
+make verify-bundle # Check a built .app carries its resource bundles
 make install  # Bundle and install to /Applications
 make clean    # Remove build artifacts
 make help     # Show all commands
 ```
+
+**Never use `make run` to try something out.** The log path comes from the
+`logFilePath` preference, which on a real machine points at the user's actual
+log — `make run` will read and append to it. Use `make run-scratch`, or pass
+`-logFilePath <path>` yourself; that argument lands in `NSArgumentDomain`, which
+outranks the saved preference and is never written back. When a packaged app is
+needed, build it with `BUNDLE_ID=com.logger-txt.app.dev ./Scripts/bundle.sh` so
+it gets its own preferences domain and cannot clobber the saved global hotkey.
 
 Or using Swift directly:
 
 ```bash
 swift build              # Build the project
 swift test               # Run tests
-swift build && .build/debug/LoggerTXT  # Build and run
+swift build && .build/debug/LoggerTXT -logFilePath /tmp/dev-log.txt  # Run
 ./Scripts/bundle.sh      # Create .app bundle
 ```
 

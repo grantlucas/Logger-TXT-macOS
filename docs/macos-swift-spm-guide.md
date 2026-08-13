@@ -219,7 +219,8 @@ SPM builds executables, not `.app` bundles. Create `Scripts/bundle.sh`:
 
 ```bash
 #!/bin/bash
-set -e
+set -euo pipefail
+shopt -s nullglob   # the *.bundle glob must vanish, not expand literally
 
 cd "$(dirname "$0")/.."
 
@@ -233,6 +234,7 @@ RESOURCES_DIR="$CONTENTS_DIR/Resources"
 
 echo "Building $APP_NAME for release..."
 swift build -c release
+BIN_DIR="$(swift build -c release --show-bin-path)"
 
 echo "Creating app bundle..."
 
@@ -240,7 +242,18 @@ rm -rf "$BUNDLE_DIR"
 mkdir -p "$MACOS_DIR"
 mkdir -p "$RESOURCES_DIR"
 
-cp "$BUILD_DIR/$APP_NAME" "$MACOS_DIR/"
+cp "$BIN_DIR/$APP_NAME" "$MACOS_DIR/"
+
+# Any dependency that ships resources gets a synthesized Bundle.module that
+# hard-traps when its resource bundle is missing. The accessor probes
+# Bundle.main.bundleURL/<name>.bundle, which for an .app is the .app itself —
+# NOT Contents/Resources. Real payload in Contents/Resources (the part codesign
+# seals), symlinked from the root where the accessor looks. See docs/adr/010.
+for resource_bundle in "$BIN_DIR"/*.bundle; do
+    bundle_basename="$(basename "$resource_bundle")"
+    ditto "$resource_bundle" "$RESOURCES_DIR/$bundle_basename"
+    ln -s "Contents/Resources/$bundle_basename" "$BUNDLE_DIR/$bundle_basename"
+done
 
 cat > "$CONTENTS_DIR/Info.plist" << 'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>

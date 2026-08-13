@@ -32,10 +32,20 @@ jobs:
       - name: Build and bundle app
         run: VERSION=${{ steps.version.outputs.version }} ./Scripts/bundle.sh
 
-      - name: Create zip archive
+      # ditto rather than `zip -r`: the .app carries a symlink at its root for
+      # the SwiftPM resource bundles (see docs/adr/010) and `zip -r` follows it,
+      # storing a duplicate copy of the payload. ditto preserves it, so the
+      # artifact users download is the one that was verified. Extract and
+      # re-verify, so the check covers the shipped artifact and not just the
+      # build directory.
+      - name: Create and verify zip archive
         run: |
-          cd .build/release
-          zip -r "Logger-TXT-${{ steps.version.outputs.version }}-macos.zip" "Logger-TXT.app"
+          VERSION="${{ steps.version.outputs.version }}"
+          ditto -c -k --sequesterRsrc --keepParent \
+            .build/release/Logger-TXT.app \
+            ".build/release/Logger-TXT-${VERSION}-macos.zip"
+          ditto -x -k ".build/release/Logger-TXT-${VERSION}-macos.zip" "$RUNNER_TEMP/extracted"
+          ./Scripts/verify-app-bundle.sh "$RUNNER_TEMP/extracted/Logger-TXT.app" --bin-dir /nonexistent
 
       - name: Compute SHA256
         id: sha
