@@ -29,6 +29,14 @@ mkdir -p "$RESOURCES_DIR"
 # Copy executable
 cp "$BUILD_DIR/LoggerTXT" "$MACOS_DIR/"
 
+# Copy SwiftPM resource bundles (e.g. KeyboardShortcuts_KeyboardShortcuts.bundle).
+# Bundle.module looks for them in Contents/Resources and calls fatalError when
+# they are missing, which crashes the app when Settings opens.
+for bundle in "$BUILD_DIR"/*.bundle; do
+    [ -e "$bundle" ] || continue
+    cp -R "$bundle" "$RESOURCES_DIR/"
+done
+
 # Create Info.plist
 cat > "$CONTENTS_DIR/Info.plist" << PLIST
 <?xml version="1.0" encoding="UTF-8"?>

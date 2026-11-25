@@ -30,6 +30,9 @@ jobs:
       - name: Build and bundle app
         run: VERSION=${{ steps.version.outputs.version }} ./Scripts/bundle.sh
 
+      - name: Verify app bundle resources
+        run: ./Scripts/verify-bundle.sh
+
       - name: Create zip archive
         run: |
           cd .build/release

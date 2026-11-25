@@ -15,6 +15,7 @@ decisions made during the Logger-TXT Swift rewrite.
 | [006](006-keyboard-shortcuts-library.md) | KeyboardShortcuts for hotkey | Accepted |
 | [007](007-actor-for-file-service.md) | Swift Actor for file operations | Accepted |
 | [008](008-lessons-learned.md) | Lessons learned and pitfalls | N/A |
+| [010](010-bundle-spm-resource-bundles.md) | Ship SwiftPM resource bundles in the app | Accepted |
 
 ## Context
 
