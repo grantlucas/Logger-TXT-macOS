@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted
+Accepted. The root symlink is superseded by
+[ADR 011](011-ad-hoc-sign-app-bundle.md): it stopped `codesign` from sealing
+the bundle, and the build now uses the swiftbuild accessor instead.
 
 ## Context
 

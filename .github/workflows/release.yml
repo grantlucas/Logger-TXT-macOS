@@ -32,12 +32,11 @@ jobs:
       - name: Build and bundle app
         run: VERSION=${{ steps.version.outputs.version }} ./Scripts/bundle.sh
 
-      # ditto rather than `zip -r`: the .app carries a symlink at its root for
-      # the SwiftPM resource bundles (see docs/adr/010) and `zip -r` follows it,
-      # storing a duplicate copy of the payload. ditto preserves it, so the
-      # artifact users download is the one that was verified. Extract and
-      # re-verify, so the check covers the shipped artifact and not just the
-      # build directory.
+      # ditto rather than `zip -r`: ditto keeps the bundle's symlinks, extended
+      # attributes and code signature exactly as built, so the artifact users
+      # download is the one that was verified. Extract and re-verify, so the
+      # resource and signature checks cover the shipped artifact and not just
+      # the build directory. See docs/adr/011.
       - name: Create and verify zip archive
         run: |
           VERSION="${{ steps.version.outputs.version }}"

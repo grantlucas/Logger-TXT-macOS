@@ -62,8 +62,8 @@ verify-bundle:
 	@./Scripts/verify-app-bundle.sh "$(BUNDLE_DIR)"
 
 # Install to /Applications. Replaces rather than merges: `cp -r` over an
-# existing .app leaves stale files from the previous install behind, and ditto
-# preserves the resource-bundle symlink at the app root.
+# existing .app leaves stale files from the previous install behind, which
+# breaks the code signature, and ditto copies the signed bundle exactly.
 install: bundle
 	@echo "Installing to /Applications..."
 	@rm -rf /Applications/Logger-TXT.app

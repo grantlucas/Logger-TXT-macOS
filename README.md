@@ -82,8 +82,16 @@ Download the latest `.zip` from
 [Releases](https://github.com/grantlucas/Logger-TXT-macOS/releases),
 unzip, and drag `Logger-TXT.app` to your Applications folder.
 
-Since the app is not code-signed, you may need to right-click → Open on first
-launch to bypass Gatekeeper.
+### First Launch
+
+The app is ad-hoc signed but not notarized, so macOS blocks the first launch
+whether you installed with Homebrew or by hand. Open it once, dismiss the
+warning, then go to System Settings → Privacy & Security and click Open Anyway.
+Or clear the quarantine flag from a terminal:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/Logger-TXT.app
+```
 
 ## Usage
 
