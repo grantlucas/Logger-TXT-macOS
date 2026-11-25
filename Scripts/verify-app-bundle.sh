@@ -1,13 +1,13 @@
 #!/bin/bash
-# Verify a built Logger-TXT.app carries the SwiftPM resource bundles it needs.
+# Verify a built Logger-TXT.app carries the SwiftPM resource bundles it needs
+# and has a code signature Gatekeeper will accept as intact.
 #
-# SwiftPM generates a Bundle.module accessor that resolves against
-# Bundle.main.bundleURL — for an .app that is the .app directory itself, not
-# Contents/Resources — and hard-traps (Swift.fatalError) when the bundle is
-# absent. Such a build compiles, links and launches fine; it dies the instant a
-# dependency first reads a localized string. KeyboardShortcuts does that while
-# initialising its Recorder, so the whole failure mode is "Preferences crashes
-# on the Keyboard Shortcuts tab". See docs/adr/010.
+# SwiftPM generates a Bundle.module accessor that hard-traps (Swift.fatalError)
+# when the bundle is absent. Such a build compiles, links and launches fine; it
+# dies the instant a dependency first reads a localized string. KeyboardShortcuts
+# does that while initialising its Recorder, so the whole failure mode is
+# "Preferences crashes on the Keyboard Shortcuts tab". The swiftbuild accessor
+# looks in Contents/Resources; the native one does not. See docs/adr/010 and 011.
 #
 # usage: verify-app-bundle.sh <app-path> [--bin-dir DIR]
 #
@@ -111,16 +111,13 @@ fi
 missing=0
 while IFS= read -r name; do
     [ -n "$name" ] || continue
-    target="$APP/$name"
+    target="$APP/Contents/Resources/$name"
 
-    # -d follows symlinks, which is the point: the real payload lives in
-    # Contents/Resources (inside the codesign seal) and the root entry is a
-    # relative symlink to it.
+    # The swiftbuild accessor's first candidate is Bundle.main.resourceURL,
+    # which for an .app is Contents/Resources, inside the codesign seal.
     if [ ! -d "$target" ]; then
-        echo "FAIL: $name does not resolve at the app root" >&2
+        echo "FAIL: $name is not in Contents/Resources" >&2
         echo "      expected: $target" >&2
-        echo "      Bundle.module resolves against Bundle.main.bundleURL, which" >&2
-        echo "      for an .app is the .app itself — not Contents/Resources." >&2
         missing=1
         continue
     fi
@@ -144,20 +141,22 @@ done <<< "$expected"
 
 # --- the trap that let this ship silently ----------------------------------
 
-# The accessor's second candidate is an absolute path into whatever build
-# directory produced the binary. On the maintainer's machine that path exists,
-# so a broken bundle keeps working locally and breaks for everyone else — until
-# the directory is renamed, at which point it breaks locally too. Report it so
-# a build is never quietly leaning on it.
-while IFS= read -r baked; do
-    [ -n "$baked" ] || continue
-    if [ -d "$baked" ]; then
-        echo "  note: binary can fall back to $baked (exists on this machine —"
-        echo "        it would NOT exist for anyone else)"
-    else
-        echo "  note: binary's build-dir fallback $baked does not exist"
-    fi
-done <<< "$(strings -a "$EXE" | grep -Eo '/[^"[:space:]]*/\.build/[^"[:space:]]*\.bundle' | sort -u || true)"
+# The native build system's accessor bakes in an absolute path to the build
+# directory that produced the binary, and otherwise only looks at the .app
+# root, never Contents/Resources. On the build machine that path exists, so the
+# app works locally and traps for everyone else. The swiftbuild accessor bakes
+# in no path, so any absolute bundle path in the binary means it was built
+# with the wrong build system. See docs/adr/011.
+baked_paths="$(strings -a "$EXE" \
+    | grep -Eo '/[^"[:space:]]*/[A-Za-z0-9][A-Za-z0-9_.+-]*_[A-Za-z0-9_.+-]+\.bundle' \
+    | sort -u || true)"
+if [ -n "$baked_paths" ]; then
+    echo "FAIL: binary was built with the native build system" >&2
+    echo "      its Bundle.module only checks the .app root and these paths:" >&2
+    echo "$baked_paths" | sed 's/^/        /' >&2
+    echo "      build with: swift build -c release --build-system swiftbuild" >&2
+    exit 1
+fi
 
 if [ "$missing" -ne 0 ]; then
     echo "FAIL: app bundle is missing SwiftPM resource bundles" >&2
@@ -165,3 +164,18 @@ if [ "$missing" -ne 0 ]; then
 fi
 
 echo "OK: all SwiftPM resource bundles resolve"
+
+# --- code signature --------------------------------------------------------
+
+# The linker ad-hoc signs the executable on its own, and that signature claims
+# the bundle has sealed resources. Without a bundle-level signature to seal
+# Contents/Resources, Gatekeeper sees a broken signature on a quarantined
+# download and reports the app as "damaged" with no way to open it. See
+# docs/adr/011.
+if ! codesign_output="$(codesign --verify --deep --strict "$APP" 2>&1)"; then
+    echo "FAIL: code signature does not verify" >&2
+    echo "$codesign_output" | sed 's/^/      /' >&2
+    exit 1
+fi
+
+echo "OK: code signature verifies"

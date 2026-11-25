@@ -233,8 +233,10 @@ MACOS_DIR="$CONTENTS_DIR/MacOS"
 RESOURCES_DIR="$CONTENTS_DIR/Resources"
 
 echo "Building $APP_NAME for release..."
-swift build -c release
-BIN_DIR="$(swift build -c release --show-bin-path)"
+# swiftbuild's Bundle.module looks in Contents/Resources; the deprecated native
+# build system's only looks at the .app root, which codesign can't seal.
+swift build -c release --build-system swiftbuild
+BIN_DIR="$(swift build -c release --build-system swiftbuild --show-bin-path)"
 
 echo "Creating app bundle..."
 
@@ -245,14 +247,12 @@ mkdir -p "$RESOURCES_DIR"
 cp "$BIN_DIR/$APP_NAME" "$MACOS_DIR/"
 
 # Any dependency that ships resources gets a synthesized Bundle.module that
-# hard-traps when its resource bundle is missing. The accessor probes
-# Bundle.main.bundleURL/<name>.bundle, which for an .app is the .app itself —
-# NOT Contents/Resources. Real payload in Contents/Resources (the part codesign
-# seals), symlinked from the root where the accessor looks. See docs/adr/010.
+# hard-traps when its resource bundle is missing. Put them in
+# Contents/Resources and nowhere else: anything at the .app root stops codesign
+# from sealing the bundle. See docs/adr/010 and 011.
 for resource_bundle in "$BIN_DIR"/*.bundle; do
     bundle_basename="$(basename "$resource_bundle")"
     ditto "$resource_bundle" "$RESOURCES_DIR/$bundle_basename"
-    ln -s "Contents/Resources/$bundle_basename" "$BUNDLE_DIR/$bundle_basename"
 done
 
 cat > "$CONTENTS_DIR/Info.plist" << 'PLIST'
@@ -286,6 +286,10 @@ cat > "$CONTENTS_DIR/Info.plist" << 'PLIST'
 PLIST
 
 echo -n "APPL????" > "$CONTENTS_DIR/PkgInfo"
+
+# Ad-hoc sign the whole bundle last. The linker signs only the executable, and
+# a downloaded app with that signature alone is reported as "damaged".
+codesign --force --sign - "$BUNDLE_DIR"
 
 echo "Bundle created at: $BUNDLE_DIR"
 ```
